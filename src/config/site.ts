@@ -25,6 +25,6 @@ export const siteConfig = {
 } as const;
 
 export function absoluteUrl(path = '/', site?: URL) {
-  const base = site || new URL(import.meta.env.SITE_URL || 'https://digital-tidy-room.pages.dev');
+  const base = site || new URL(import.meta.env.SITE_URL || 'https://caelus-h.com');
   return new URL(path, base).toString();
 }

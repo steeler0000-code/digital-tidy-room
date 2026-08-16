@@ -9,7 +9,7 @@ const staticPaths = [
 type SitemapItem = { path: string; lastmod?: string };
 
 export const GET: APIRoute = async ({ site }) => {
-  const base = site || new URL('https://digital-tidy-room.pages.dev');
+  const base = site || new URL('https://caelus-h.com');
   const articles = await getPublishedArticles();
   const columns = await getPublishedColumns();
   const items: SitemapItem[] = [
