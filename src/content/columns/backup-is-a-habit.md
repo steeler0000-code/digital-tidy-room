@@ -4,6 +4,8 @@ description: "자동 백업을 설정한 뒤에도 복원 확인과 오류 점�
 subtitle: "백업이 있다고 믿는 상태와 복원할 수 있음을 확인한 상태는 다릅니다."
 slug: "backup-is-a-habit"
 author: "카일루스"
+scheduledAt: 2026-09-06
+editorialApproved: true
 draft: true
 featured: false
 summary: "백업 도구의 기능보다 마지막 성공 시각, 오류 알림, 대표 파일 복원과 복구 수단 확인을 반복하는 습관이 중요합니다. 자동화는 기억 부담을 줄이지만 확인 책임까지 없애지는 않습니다."

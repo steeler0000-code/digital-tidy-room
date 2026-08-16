@@ -4,6 +4,8 @@ description: "폴더 구조를 더 깊게 만들지 않고 운영체제와 앱�
 subtitle: "검색은 분류를 없애는 기술이 아니라 단순한 분류를 보완하는 도구입니다."
 slug: "search-over-folders"
 author: "카일루스"
+scheduledAt: 2026-10-04
+editorialApproved: true
 draft: true
 featured: false
 summary: "파일 형식, 날짜, 작성자와 주제어가 남아 있고 검색 색인이 안정적으로 작동한다면 깊은 폴더보다 검색이 빠를 수 있습니다. 다만 장기 보관과 다른 서비스로 옮길 자료에는 폴더와 파일명으로 맥락을 남겨야 합니다."

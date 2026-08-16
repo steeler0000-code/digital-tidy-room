@@ -5,6 +5,8 @@ subtitle: "모든 파일을 같은 강도로 보호하지 않고 대체할 수 �
 slug: "personal-321-backup"
 category: "backup-accounts"
 author: "카일루스"
+scheduledAt: 2026-09-16
+editorialApproved: true
 draft: true
 featured: false
 summary: "중요한 자료는 원본을 포함해 3개 사본, 2가지 유형의 저장 위치, 1개는 다른 장소에 두는 원칙으로 점검합니다. 작은 핵심 폴더부터 자동 백업과 복원 시험을 설정합니다."

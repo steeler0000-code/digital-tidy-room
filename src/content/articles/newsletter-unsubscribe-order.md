@@ -5,6 +5,8 @@ subtitle: "모든 해지 링크를 누르기보다 발신자와 메일의 성격
 slug: "newsletter-unsubscribe-order"
 category: "email-web"
 author: "카일루스"
+scheduledAt: 2026-09-09
+editorialApproved: true
 draft: true
 featured: false
 summary: "반복 메일을 필요한 알림, 정상 뉴스레터, 수상한 메일로 나눕니다. 정상 구독은 공식 해지 기능을 사용하고, 수상한 메일은 링크를 누르지 않고 신고하거나 차단합니다."

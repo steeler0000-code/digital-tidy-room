@@ -5,6 +5,8 @@ subtitle: "알림 수를 줄이는 목적은 조용함이 아니라 중요한 �
 slug: "notification-priority-reset"
 category: "digital-habits"
 author: "카일루스"
+scheduledAt: 2026-09-30
+editorialApproved: true
 draft: true
 featured: false
 summary: "앱별로 즉시 확인할 알림, 정해진 시간에 모아 볼 알림, 필요 없는 알림을 나눕니다. 배지·소리·잠금화면 표시를 각각 조정하고 일주일 뒤 놓친 연락이 없는지 검토합니다."

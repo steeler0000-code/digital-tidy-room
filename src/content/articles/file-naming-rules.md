@@ -5,6 +5,8 @@ subtitle: "좋은 파일명은 모든 정보를 담지 않고 검색할 단서�
 slug: "file-naming-rules"
 category: "files-folders"
 author: "카일루스"
+scheduledAt: 2026-08-26
+editorialApproved: true
 draft: true
 featured: false
 summary: "파일명은 `날짜_주제_상태`처럼 큰 기준부터 작은 기준 순으로 씁니다. `최종`, `진짜최종` 대신 버전이나 확정 날짜를 사용하고, 같은 작업 안에서는 표기 방식을 통일합니다."

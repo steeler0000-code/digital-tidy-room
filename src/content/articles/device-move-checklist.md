@@ -5,6 +5,8 @@ subtitle: "새 기기가 정상 작동하는 것을 확인하기 전에는 기�
 slug: "device-move-checklist"
 category: "digital-habits"
 author: "카일루스"
+scheduledAt: 2026-10-21
+editorialApproved: true
 draft: true
 featured: false
 summary: "기기 교체 전 최신 백업과 계정 복구 수단을 확인합니다. 이전 후에는 사진, 메시지, 인증 앱과 중요한 파일을 직접 열어보고, 며칠 사용한 뒤 기존 기기에서 계정을 로그아웃하고 공식 절차로 초기화합니다."

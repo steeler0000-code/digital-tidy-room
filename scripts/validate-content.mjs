@@ -98,11 +98,18 @@ for (const [collectionName, documents] of [
 
     const publishedAt = dateOnly(data.publishedAt);
     const updatedAt = dateOnly(data.updatedAt);
+    const scheduledAt = dateOnly(data.scheduledAt);
     if (data.draft === false && !publishedAt) errors.push(`${file}: 공개 문서에는 유효한 publishedAt이 필요합니다.`);
     if (data.draft === true && data.publishedAt) errors.push(`${file}: 초안에는 미리 만든 발행일을 넣지 않습니다.`);
     if (publishedAt && publishedAt > new Date()) errors.push(`${file}: 미래 발행일은 사용할 수 없습니다.`);
     if (updatedAt && updatedAt > new Date()) errors.push(`${file}: 미래 수정일은 사용할 수 없습니다.`);
     if (publishedAt && updatedAt && updatedAt < publishedAt) errors.push(`${file}: 수정일이 발행일보다 빠릅니다.`);
+    if (data.scheduledAt && !scheduledAt) errors.push(`${file}: scheduledAt 날짜가 올바르지 않습니다.`);
+    if (data.editorialApproved !== undefined && typeof data.editorialApproved !== 'boolean') {
+      errors.push(`${file}: editorialApproved는 true 또는 false여야 합니다.`);
+    }
+    if (scheduledAt && data.draft !== true) errors.push(`${file}: 예약일은 초안에만 사용할 수 있습니다.`);
+    if (scheduledAt && data.editorialApproved !== true) errors.push(`${file}: 예약 발행 전 편집 승인이 필요합니다.`);
 
     if (collectionName === 'articles' && !categories.has(data.category)) {
       errors.push(`${file}: 등록되지 않은 카테고리(${data.category})입니다.`);

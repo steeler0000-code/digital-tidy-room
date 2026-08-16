@@ -5,6 +5,8 @@ subtitle: "저장 버튼을 누르기 전에 언제 다시 쓸지를 한 번 정
 slug: "bookmark-without-pile"
 category: "email-web"
 author: "카일루스"
+scheduledAt: 2026-09-23
+editorialApproved: true
 draft: true
 featured: false
 summary: "북마크는 자주 방문, 읽을 목록, 프로젝트 참고의 세 용도로 나눕니다. 읽을 자료에는 처리 기한을 두고, 중요한 정보는 링크만 저장하지 말고 공식 문서와 맥락을 함께 기록합니다."

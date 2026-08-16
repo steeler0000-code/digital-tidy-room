@@ -5,6 +5,8 @@ subtitle: "용량을 줄이는 것보다 남길 원본을 정확히 고르는 �
 slug: "photo-duplicates-checklist"
 category: "photos-media"
 author: "카일루스"
+scheduledAt: 2026-09-02
+editorialApproved: true
 draft: true
 featured: false
 summary: "중복 정리 기능의 제안만 믿고 대량 삭제하지 않습니다. 촬영 시각, 해상도, 파일 크기, 편집 상태, 연결된 동영상과 백업 상태를 비교한 뒤 작은 묶음부터 처리합니다."

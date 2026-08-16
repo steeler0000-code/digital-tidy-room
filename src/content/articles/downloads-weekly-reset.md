@@ -5,6 +5,8 @@ subtitle: "무조건 삭제하지 않고 출처와 용도를 확인하는 짧은
 slug: "downloads-weekly-reset"
 category: "files-folders"
 author: "카일루스"
+scheduledAt: 2026-08-19
+editorialApproved: true
 draft: true
 featured: false
 summary: "다운로드 폴더는 임시 입구로 정하고 매주 최근 파일부터 처리합니다. 정식 보관 파일은 옮기고, 재다운로드 가능한 임시 파일은 삭제하며, 정체를 모르는 파일은 실행하지 않은 채 확인합니다."

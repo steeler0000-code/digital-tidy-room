@@ -5,6 +5,8 @@ subtitle: "공유 링크와 메신저 전송본을 원본 보관으로 착각하
 slug: "photo-original-backup-share"
 category: "photos-media"
 author: "카일루스"
+scheduledAt: 2026-10-07
+editorialApproved: true
 draft: true
 featured: false
 summary: "원본을 먼저 백업하고 편집본을 별도 이름으로 만든 뒤 공유합니다. 공유 서비스가 화질, 메타데이터, 만료 기간에 미치는 영향을 확인하고 받는 사람이 파일을 열었는지 확인합니다."

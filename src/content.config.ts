@@ -20,6 +20,8 @@ const sharedFields = {
   author: z.string().default('카일루스'),
   publishedAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
+  scheduledAt: z.coerce.date().optional(),
+  editorialApproved: z.boolean().default(false),
   draft: z.boolean().default(true),
   featured: z.boolean().default(false),
   summary: z.string(),

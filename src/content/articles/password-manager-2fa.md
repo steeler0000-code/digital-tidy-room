@@ -5,6 +5,8 @@ subtitle: "하나의 강한 비밀번호를 반복하는 대신 계정마다 고
 slug: "password-manager-2fa"
 category: "backup-accounts"
 author: "카일루스"
+scheduledAt: 2026-10-14
+editorialApproved: true
 draft: true
 featured: false
 summary: "비밀번호 관리자는 계정마다 길고 고유한 비밀번호를 생성·보관하고, 2단계 인증은 비밀번호가 노출돼도 추가 확인을 요구합니다. 관리자 계정의 주 비밀번호와 복구 수단은 특히 신중히 보호합니다."
