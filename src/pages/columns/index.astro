@@ -1,0 +1,34 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ArticleCard from '@/components/ArticleCard.astro';
+import { getPublishedColumns } from '@/lib/content';
+const columns = await getPublishedColumns();
+---
+
+<BaseLayout title="카일루스 칼럼" description="디지털 정리를 오래 유지하기 위해 필요한 기준과 관점을 카일루스의 짧은 칼럼으로 전합니다.">
+  <header class="page-hero">
+    <div class="container">
+      <p class="eyebrow">Kailus Column</p>
+      <h1>도구보다 오래 남는<br />정리의 기준을 생각합니다</h1>
+      <p class="page-hero__lead">칼럼은 특정 앱 사용법보다 선택 기준과 유지 습관을 다룹니다. 개인적인 성공담을 꾸며내지 않고, 관찰 가능한 문제에서 출발합니다.</p>
+    </div>
+  </header>
+  <section class="section--compact">
+    <div class="container">
+      {columns.length ? (
+        <div class="article-grid">
+          {columns.map((column) => (
+            <ArticleCard
+              href={`/columns/${column.data.slug}/`}
+              title={column.data.title}
+              description={column.data.description}
+              label="카일루스"
+              date={column.data.updatedAt || column.data.publishedAt}
+              kind="칼럼"
+            />
+          ))}
+        </div>
+      ) : <div class="empty-state"><h2>칼럼을 검토하고 있습니다</h2><p>첫 칼럼이 준비되면 이곳에 공개합니다.</p></div>}
+    </div>
+  </section>
+</BaseLayout>

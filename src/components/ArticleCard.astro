@@ -1,0 +1,25 @@
+---
+type Props = {
+  href: string;
+  title: string;
+  description: string;
+  label: string;
+  date?: Date;
+  kind?: '정보글' | '칼럼';
+};
+
+const { href, title, description, label, date, kind = '정보글' } = Astro.props;
+const formattedDate = date
+  ? new Intl.DateTimeFormat('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }).format(date)
+  : '';
+---
+
+<a class="article-card" href={href}>
+  <div class="article-card__meta">
+    <span class="article-card__kind">{kind} · {label}</span>
+    {date && <time datetime={date.toISOString()}>{formattedDate}</time>}
+  </div>
+  <h3>{title}</h3>
+  <p>{description}</p>
+  <span class="article-card__more">읽어보기 →</span>
+</a>

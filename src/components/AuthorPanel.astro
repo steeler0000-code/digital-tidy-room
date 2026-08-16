@@ -1,0 +1,15 @@
+---
+import { siteConfig } from '@/config/site';
+type Props = { compact?: boolean };
+const { compact = false } = Astro.props;
+---
+
+<aside class="author-panel" aria-label="운영자 소개">
+  <div class="author-badge" aria-hidden="true">ㅋ</div>
+  <div>
+    <span class="eyebrow">Editor</span>
+    <h2>{compact ? siteConfig.owner : `${siteConfig.owner}가 정리합니다`}</h2>
+    <p>{siteConfig.ownerBio}</p>
+  </div>
+  <a class="button button--secondary" href="/author/">운영자 소개</a>
+</aside>

@@ -1,0 +1,30 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { categories } from '@/data/categories';
+import { getPublishedArticles } from '@/lib/content';
+const articles = await getPublishedArticles();
+---
+
+<BaseLayout title="주제별 안내" description="파일, 사진, 이메일, 백업과 디지털 생활 습관을 다섯 개 주제로 나누어 살펴보세요.">
+  <header class="page-hero">
+    <div class="container">
+      <p class="eyebrow">Browse by Topic</p>
+      <h1>지금 정리하고 싶은 공간부터<br />천천히 시작하세요</h1>
+      <p class="page-hero__lead">각 카테고리는 문제의 성격과 해결 순서가 비슷한 글을 묶었습니다. 모든 것을 한꺼번에 바꿀 필요는 없습니다.</p>
+    </div>
+  </header>
+  <section class="section--compact">
+    <div class="container category-grid">
+      {categories.map((category) => {
+        const count = articles.filter((article) => article.data.category === category.slug).length;
+        return (
+          <a class="category-card" href={`/categories/${category.slug}/`} style={`background:${category.accent}`}>
+            <span class="category-card__number">ROOM {category.number} · 공개 글 {count}개</span>
+            <h2>{category.name}</h2>
+            <p>{category.description}</p>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+</BaseLayout>

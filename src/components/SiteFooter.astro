@@ -1,0 +1,40 @@
+---
+import { siteConfig } from '@/config/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__grid">
+      <div>
+        <a class="brand site-footer__brand" href="/">
+          <span class="brand__mark" aria-hidden="true"></span>
+          <span>{siteConfig.name}</span>
+        </a>
+        <p class="site-footer__description">{siteConfig.tagline}</p>
+        <p>
+          운영자 <a href="/author/">{siteConfig.owner}</a><br />
+          <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
+        </p>
+      </div>
+      <nav class="footer-links" aria-label="사이트 안내">
+        <strong>사이트 안내</strong>
+        <a href="/about/">사이트 소개</a>
+        <a href="/author/">운영자 소개</a>
+        <a href="/editorial-policy/">편집 원칙</a>
+        <a href="/contact/">문의하기</a>
+        <a href="/sitemap/">전체 사이트맵</a>
+      </nav>
+      <nav class="footer-links" aria-label="정책 안내">
+        <strong>정책 안내</strong>
+        <a href="/privacy/">개인정보처리방침</a>
+        <a href="/terms/">이용약관</a>
+        <a href="/disclaimer/">면책고지</a>
+      </nav>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© {year} {siteConfig.name}. All rights reserved.</span>
+      <span>정보를 찾는 시간을 줄이고, 다시 쓰는 시간을 늘립니다.</span>
+    </div>
+  </div>
+</footer>

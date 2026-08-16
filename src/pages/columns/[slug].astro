@@ -1,0 +1,27 @@
+---
+import type { GetStaticPaths } from 'astro';
+import type { CollectionEntry } from 'astro:content';
+import { getCollection, render } from 'astro:content';
+import ArticleLayout from '@/layouts/ArticleLayout.astro';
+import { isPublished } from '@/lib/content';
+
+export const getStaticPaths = (async () => {
+  const columns = (await getCollection('columns')).filter(isPublished);
+  return columns.map((column) => ({ params: { slug: column.data.slug }, props: { column, columns } }));
+}) satisfies GetStaticPaths;
+
+type ColumnEntry = CollectionEntry<'columns'>;
+const { column, columns } = Astro.props as {
+  column: ColumnEntry;
+  columns: ColumnEntry[];
+};
+const { Content, headings } = await render(column);
+const relatedItems = column.data.related
+  .map((slug) => columns.find((item) => item.data.slug === slug))
+  .filter((item): item is ColumnEntry => Boolean(item))
+  .map((item) => ({ href: `/columns/${item.data.slug}/`, title: item.data.title }));
+---
+
+<ArticleLayout entry={column} headings={headings} relatedItems={relatedItems} kind="column">
+  <Content />
+</ArticleLayout>

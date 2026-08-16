@@ -1,0 +1,43 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import TrustNav from '@/components/TrustNav.astro';
+import { siteConfig } from '@/config/site';
+---
+
+<BaseLayout title="사이트 소개" description="디지털 정리실이 어떤 문제를 다루고 어떤 기준으로 정보를 만드는지 소개합니다.">
+  <header class="page-hero">
+    <div class="container">
+      <p class="eyebrow">About This Site</p>
+      <h1>정리는 많이 저장하는 기술이 아니라<br />필요할 때 다시 쓰는 준비입니다</h1>
+      <p class="page-hero__lead">{siteConfig.name}은 디지털 자료를 어디에 두었는지 기억하느라 지친 사람을 위한 생활 정보 사이트입니다.</p>
+    </div>
+  </header>
+  <section class="section--compact">
+    <div class="container trust-layout">
+      <TrustNav />
+      <article class="trust-content">
+        <h2>운영 목적</h2>
+        <p>스마트폰과 컴퓨터를 오래 쓰다 보면 파일, 사진, 메일, 계정이 서로 다른 장소에 쌓입니다. 문제는 자료가 많다는 사실보다 다시 찾는 기준과 잃었을 때 되돌릴 준비가 없다는 데서 시작됩니다.</p>
+        <p>이 사이트는 특정 앱 하나를 정답으로 제시하지 않습니다. 먼저 분류 기준과 백업 원칙을 설명하고, 독자가 자신이 쓰는 도구에 맞춰 적용할 수 있도록 순서와 체크리스트를 제공합니다.</p>
+
+        <h2>다루는 주제</h2>
+        <ul>
+          <li>파일과 폴더의 이름, 위치, 보관 기간을 정하는 방법</li>
+          <li>스마트폰 사진과 영상을 정리하고 사본을 확인하는 방법</li>
+          <li>이메일과 브라우저에 들어오는 정보를 줄이고 다시 찾는 방법</li>
+          <li>동기화, 백업, 계정 보호의 기본 개념</li>
+          <li>정리가 무너지지 않도록 돕는 정기 점검 습관</li>
+        </ul>
+
+        <h2>다루지 않는 것</h2>
+        <p>의학, 법률, 투자처럼 개인의 중요한 결정을 대신할 수 있는 전문 조언은 제공하지 않습니다. 특정 소프트웨어의 유료 구매를 강요하거나 제휴 관계를 숨긴 추천도 하지 않습니다.</p>
+
+        <h2>콘텐츠를 읽는 방법</h2>
+        <p>처음부터 모든 글을 읽을 필요는 없습니다. 지금 가장 자주 겪는 문제를 하나 고르고, 글의 핵심 요약과 체크리스트부터 확인하세요. 실행 전에 삭제·초기화·이동처럼 되돌리기 어려운 작업의 주의사항을 먼저 읽는 것을 권합니다.</p>
+
+        <h2>수정과 문의</h2>
+        <p>서비스 화면과 기능은 바뀔 수 있습니다. 실제로 내용을 점검하거나 의미 있는 정보를 보완했을 때만 수정일을 표시합니다. 오류 제보와 주제 제안은 <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>로 받습니다.</p>
+      </article>
+    </div>
+  </section>
+</BaseLayout>

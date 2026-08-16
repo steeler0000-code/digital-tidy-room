@@ -1,0 +1,11 @@
+---
+type Item = { label: string; href?: string };
+type Props = { items: Item[] };
+const { items } = Astro.props;
+---
+
+<nav aria-label="현재 위치">
+  <ol class="breadcrumb">
+    {items.map((item) => <li>{item.href ? <a href={item.href}>{item.label}</a> : item.label}</li>)}
+  </ol>
+</nav>

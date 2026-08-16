@@ -1,0 +1,42 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import TrustNav from '@/components/TrustNav.astro';
+import { siteConfig } from '@/config/site';
+---
+
+<BaseLayout title="문의하기" description="디지털 정리실의 오류 제보, 주제 제안과 일반 문의는 이메일로 보내주세요.">
+  <header class="page-hero">
+    <div class="container">
+      <p class="eyebrow">Contact</p>
+      <h1>오류 제보와 주제 제안을<br />이메일로 받습니다</h1>
+      <p class="page-hero__lead">문의 폼이나 회원가입 없이 운영자 이메일로 직접 연락할 수 있습니다.</p>
+    </div>
+  </header>
+  <section class="section--compact">
+    <div class="container trust-layout">
+      <TrustNav />
+      <div class="trust-content">
+        <div class="contact-card">
+          <p class="eyebrow">Email Only</p>
+          <h2>연락 이메일</h2>
+          <a class="contact-email" href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
+          <p>위 주소를 누르면 기기의 기본 이메일 앱이 열립니다. 이 사이트에는 입력 내용이 저장되는 문의 폼이 없습니다.</p>
+          <a class="button" href={`mailto:${siteConfig.email}?subject=${encodeURIComponent('[디지털 정리실 문의] ')}`}>이메일 작성하기</a>
+        </div>
+
+        <h2>빠른 확인을 위해 적어주세요</h2>
+        <ul>
+          <li>오류 제보: 글 제목, 문제가 있는 문장, 참고할 공식 자료</li>
+          <li>주제 제안: 어떤 상황에서 무엇이 어려웠는지</li>
+          <li>일반 문의: 회신받을 이메일 주소와 문의 목적</li>
+        </ul>
+
+        <h2>보내지 말아야 할 정보</h2>
+        <p>비밀번호, 인증 코드, 주민등록번호, 금융정보, 개인 문서와 복구 키를 보내지 마세요. 기기 문제를 설명할 때도 화면에 개인정보가 포함되어 있다면 먼저 가려주세요.</p>
+
+        <h2>답변 범위</h2>
+        <p>콘텐츠의 오류와 사이트 이용 관련 문의를 우선 확인합니다. 개별 기기 원격 지원, 계정 복구 대행, 법률·금융·의료 상담은 제공하지 않습니다.</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

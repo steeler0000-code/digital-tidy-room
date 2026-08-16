@@ -1,0 +1,67 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import TrustNav from '@/components/TrustNav.astro';
+import ArticleCard from '@/components/ArticleCard.astro';
+import { siteConfig } from '@/config/site';
+import { getPublishedColumns } from '@/lib/content';
+const columns = await getPublishedColumns();
+const personJson = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: siteConfig.owner,
+  url: new URL('/author/', Astro.site).toString(),
+  description: siteConfig.ownerBio
+};
+---
+
+<BaseLayout title="운영자 카일루스" description="디지털 정리실 운영자 카일루스의 소개, 편집 관점과 공개 칼럼을 확인하세요." structuredData={personJson}>
+  <header class="page-hero">
+    <div class="container">
+      <p class="eyebrow">Editor & Author</p>
+      <h1>복잡한 정보를 작은 기준으로 나누는<br />운영자 {siteConfig.owner}입니다</h1>
+      <p class="page-hero__lead">{siteConfig.ownerBio} 확인되지 않은 자격이나 경험을 내세우기보다, 출처와 판단 기준을 독자에게 보여주는 방식으로 운영합니다.</p>
+    </div>
+  </header>
+  <section class="section--compact">
+    <div class="container trust-layout">
+      <TrustNav />
+      <article class="trust-content">
+        <h2>운영자 소개</h2>
+        <p>카일루스는 디지털 정리실의 운영자 필명입니다. 일상에서 반복되는 파일 찾기, 사진 백업, 알림 관리 문제를 초보자도 이해할 수 있는 순서로 정리합니다.</p>
+        <p>전문가 자격이나 특정 제품과의 관계를 주장하지 않습니다. 제품 기능은 공식 도움말을 확인하고, 일반적인 정리 원칙과 구분해 설명합니다.</p>
+
+        <h2>글을 만들 때 지키는 기준</h2>
+        <ol>
+          <li>독자가 글을 읽은 뒤 바로 실행할 수 있는 목표를 하나 정합니다.</li>
+          <li>기능과 보안 관련 사실은 공식 문서에서 먼저 확인합니다.</li>
+          <li>삭제나 초기화가 포함된 작업은 사본 확인과 되돌리는 방법을 앞에 둡니다.</li>
+          <li>도구 이름보다 다른 환경에서도 적용 가능한 판단 기준을 남깁니다.</li>
+          <li>내용이 실제로 바뀐 경우에만 수정일을 기록합니다.</li>
+        </ol>
+
+        <h2>연락 방법</h2>
+        <p>운영자에게 보낼 내용은 이메일로만 받습니다. 주소와 전화번호는 공개하거나 문의에 사용하지 않습니다.</p>
+        <p><a class="contact-email" href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a></p>
+      </article>
+    </div>
+  </section>
+
+  {columns.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Published Columns</p>
+            <h2>카일루스가 정리한 칼럼</h2>
+          </div>
+          <a class="text-link" href="/columns/">칼럼 전체 보기</a>
+        </div>
+        <div class="article-grid">
+          {columns.map((column) => (
+            <ArticleCard href={`/columns/${column.data.slug}/`} title={column.data.title} description={column.data.description} label="카일루스" date={column.data.updatedAt || column.data.publishedAt} kind="칼럼" />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>
