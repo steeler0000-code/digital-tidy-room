@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Test scheduled publishing
+        run: node --test scripts/publish-scheduled.test.mjs
+
       - name: Publish approved due content
         run: node scripts/publish-scheduled.mjs
 
