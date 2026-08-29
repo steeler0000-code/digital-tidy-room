@@ -1,0 +1,7 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';import Calculator from '@/components/tools/Calculator.astro';import {tools,type ToolDefinition} from '@/data/tools';
+export function getStaticPaths(){return tools.map(tool=>({params:{slug:tool.slug},props:{tool}}));}
+const {tool}=Astro.props as {tool:ToolDefinition};
+const json={'@context':'https://schema.org','@type':'WebApplication',name:tool.title,description:tool.description,applicationCategory:'FinanceApplication',operatingSystem:'Web',offers:{'@type':'Offer',price:'0',priceCurrency:'KRW'}};
+---
+<BaseLayout title={tool.title} description={tool.description} canonicalPath={`/tools/${tool.slug}/`} structuredData={json}><header class="page-hero"><div class="container"><p class="eyebrow">{tool.eyebrow}</p><h1>{tool.title}</h1><p class="page-hero__lead">{tool.description}</p></div></header><section class="section--compact"><div class="container tool-shell"><Calculator tool={tool}/><aside class="tool-guide"><h2>결과를 읽는 법</h2><p>계산 결과는 입력한 가정의 산술적 결과입니다. 기대수익률은 확정 수익률이 아니며 실제 성과에는 가격 변동, 환전·매매 비용과 세금이 영향을 줍니다.</p><h3>사용 원칙</h3><ul><li>낙관·기준·보수 시나리오를 각각 계산합니다.</li><li>수수료와 환율 기준 시점을 일관되게 사용합니다.</li><li>결과 하나보다 가정을 바꿨을 때의 범위를 봅니다.</li></ul></aside></div></section></BaseLayout>

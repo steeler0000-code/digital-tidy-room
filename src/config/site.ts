@@ -1,24 +1,25 @@
 export const siteConfig = {
-  name: '디지털 정리실',
-  shortName: '정리실',
-  tagline: '파일·사진·이메일을 찾기 쉽고 잃지 않게 관리하는 생활 안내서',
+  name: 'Caelus',
+  shortName: 'Caelus',
+  tagline: '시장 이슈를 투자 판단의 기준으로 바꾸는 경제·투자 안내서',
   description:
-    '복잡한 파일, 사진, 이메일과 계정을 일상에서 다시 찾기 쉬운 구조로 정리하는 초보자용 디지털 생활 가이드입니다.',
+    '한국 투자자가 국내·미국 주식, ETF, 금리와 환율을 스스로 해석할 수 있도록 마켓 브리핑과 판단 도구를 제공합니다.',
   owner: '카일루스',
   ownerBio:
-    '복잡한 디지털 자료를 누구나 따라 할 수 있는 작은 정리 원칙으로 바꾸어 기록합니다.',
+    '시장의 숫자와 뉴스를 매수·매도 신호가 아닌, 독자가 스스로 판단할 수 있는 기준으로 정리합니다.',
   email: 'ashtongate1125@gmail.com',
   locale: 'ko_KR',
   language: 'ko',
   colors: {
-    primary: '#17324D',
-    secondary: '#197874',
-    background: '#F7F8F5'
+    primary: '#0B1F3A',
+    secondary: '#2563EB',
+    background: '#F4F7FB'
   },
   navigation: [
     { label: '홈', href: '/' },
-    { label: '주제별 안내', href: '/categories/' },
-    { label: '칼럼', href: '/columns/' },
+    { label: '마켓 브리핑', href: '/briefings/' },
+    { label: '투자 방법론', href: '/guides/' },
+    { label: '투자 도구', href: '/tools/' },
     { label: '운영자', href: '/author/' },
     { label: '소개', href: '/about/' }
   ]

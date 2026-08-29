@@ -29,6 +29,7 @@ const jsonLd = structuredData
     ? structuredData
     : [structuredData]
   : [];
+const socialImage = ogType === 'website' ? new URL('/og.png', Astro.site) : null;
 ---
 
 <!doctype html>
@@ -50,12 +51,12 @@ const jsonLd = structuredData
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL('/og.png', Astro.site)} />
-    <meta property="og:image:alt" content={`${siteConfig.name} — ${siteConfig.tagline}`} />
-    <meta name="twitter:card" content="summary_large_image" />
+    {socialImage && <meta property="og:image" content={socialImage} />}
+    {socialImage && <meta property="og:image:alt" content={`${siteConfig.name} — ${siteConfig.tagline}`} />}
+    <meta name="twitter:card" content={socialImage ? 'summary_large_image' : 'summary'} />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={new URL('/og.png', Astro.site)} />
+    {socialImage && <meta name="twitter:image" content={socialImage} />}
 
     {jsonLd.map((item) => <script is:inline type="application/ld+json" set:html={JSON.stringify(item)} />)}
   </head>

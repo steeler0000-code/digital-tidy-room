@@ -1,0 +1,4 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';import {tools} from '@/data/tools';
+---
+<BaseLayout title="투자 도구" description="복리, 환율 포함 수익률과 자산배분 차이를 브라우저에서 직접 계산하는 무료 투자 도구입니다."><header class="page-hero"><div class="container"><p class="eyebrow">Tools, not signals</p><h1>가정을 숫자로<br/>직접 확인하세요</h1><p class="page-hero__lead">결과를 약속하는 도구가 아닙니다. 수익률과 기간, 환율, 목표 비중을 바꿨을 때 숫자가 어떻게 달라지는지 확인합니다.</p></div></header><section class="section--compact"><div class="container"><div class="article-grid">{tools.map(tool=><a class="article-card" href={`/tools/${tool.slug}/`}><div class="article-card__meta"><span class="article-card__kind">{tool.eyebrow}</span></div><h2>{tool.title}</h2><p>{tool.description}</p><span class="article-card__more">도구 열기 →</span></a>)}</div></div></section></BaseLayout>

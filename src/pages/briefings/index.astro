@@ -1,0 +1,11 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ArticleCard from '@/components/ArticleCard.astro';
+import { getPublishedBriefings } from '@/lib/content';
+const briefings=await getPublishedBriefings();
+---
+<BaseLayout title="마켓 브리핑" description="날짜별 국내외 시장 이슈를 사실, 전달 경로와 다음 확인 지표로 정리한 Caelus 마켓 브리핑 아카이브입니다.">
+  <header class="page-hero"><div class="container"><p class="eyebrow">Daily archive</p><h1>마켓 브리핑</h1><p class="page-hero__lead">그날 시장을 움직인 숫자와 해석을 날짜별로 다시 찾습니다. 과거 브리핑은 당시 정보라는 점을 함께 표시합니다.</p></div></header>
+  <section class="section--compact"><div class="container"><label class="filter-box"><span>날짜·제목·주제 검색</span><input id="briefing-filter" type="search" placeholder="예: 엔비디아, 금리, 8월 26일" /></label><div class="article-grid filter-grid" id="briefing-grid">{briefings.map(entry=><div data-search={`${entry.data.title} ${entry.data.topics.join(' ')} ${entry.data.briefingDate.toISOString().slice(0,10)}`}><ArticleCard href={`/briefings/${entry.data.slug}/`} title={entry.data.title} description={entry.data.description} label={entry.data.markets.join(' · ')} date={entry.data.briefingDate}/></div>)}</div><p class="empty-state" id="filter-empty" hidden>검색 조건에 맞는 브리핑이 없습니다.</p></div></section>
+  <script is:inline>const input=document.querySelector('#briefing-filter');const cards=[...document.querySelectorAll('#briefing-grid>[data-search]')];const empty=document.querySelector('#filter-empty');input?.addEventListener('input',()=>{const q=input.value.trim().toLowerCase();let shown=0;cards.forEach(card=>{const yes=card.dataset.search.toLowerCase().includes(q);card.hidden=!yes;if(yes)shown++});empty.hidden=shown!==0;});</script>
+</BaseLayout>

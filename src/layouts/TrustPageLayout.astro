@@ -1,0 +1,9 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import TrustNav from '@/components/TrustNav.astro';
+const { title, description, eyebrow='Site policy', lead, structuredData } = Astro.props;
+---
+<BaseLayout title={title} description={description} structuredData={structuredData}>
+  <header class="page-hero"><div class="container"><p class="eyebrow">{eyebrow}</p><h1>{title}</h1><p class="page-hero__lead">{lead}</p></div></header>
+  <section class="section--compact"><div class="container trust-layout"><TrustNav/><article class="trust-content"><slot/></article></div></section>
+</BaseLayout>

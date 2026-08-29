@@ -1,15 +1,19 @@
 {
-  "name": "digital-tidy-room",
+  "name": "caelus-market-site",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
-    "build": "npm run validate:content && ASTRO_TELEMETRY_DISABLED=1 astro check && ASTRO_TELEMETRY_DISABLED=1 astro build && npm run validate:links",
+    "build": "npm run test && npm run validate:content && ASTRO_TELEMETRY_DISABLED=1 astro check && ASTRO_TELEMETRY_DISABLED=1 astro build && npm run validate:links",
     "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "preview:cloudflare": "wrangler dev",
     "check": "ASTRO_TELEMETRY_DISABLED=1 astro check",
+    "deploy:check": "npm run build && wrangler deploy --dry-run",
+    "deploy": "npm run build && wrangler deploy",
     "validate:content": "node scripts/validate-content.mjs",
-    "validate:links": "node scripts/validate-links.mjs"
+    "validate:links": "node scripts/validate-links.mjs",
+    "test": "node --test scripts/calculators.test.mjs"
   },
   "engines": {
     "node": ">=22.12.0"
@@ -20,6 +24,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "typescript": "^5.9.0",
+    "wrangler": "^4.123.0",
     "yaml": "^2.8.0"
   }
 }

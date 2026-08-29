@@ -1,0 +1,8 @@
+---
+import { getCollection, render } from 'astro:content';
+import InsightLayout from '@/layouts/InsightLayout.astro';
+import { isPublished } from '@/lib/content';
+export async function getStaticPaths(){const entries=(await getCollection('briefings')).filter(isPublished);return entries.map(entry=>({params:{slug:entry.data.slug},props:{entry}}));}
+const {entry}=Astro.props;const {Content,headings}=await render(entry);
+---
+<InsightLayout entry={entry} headings={headings} kind="briefing"><Content/></InsightLayout>

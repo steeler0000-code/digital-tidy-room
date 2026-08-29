@@ -1,0 +1,12 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ArticleCard from '@/components/ArticleCard.astro';
+import { getPublishedGuides } from '@/lib/content';
+import { guideCategories, getGuideCategory } from '@/data/categories';
+const guides=await getPublishedGuides();
+---
+<BaseLayout title="투자 방법론" description="최근 시장 사례를 이용해 금리, 환율, ETF와 기업 공시를 읽는 판단 기준을 설명합니다.">
+  <header class="page-hero"><div class="container"><p class="eyebrow">Evergreen frameworks</p><h1>유행을 따라가기보다<br/>판단 기준을 쌓습니다</h1><p class="page-hero__lead">AI·반도체, 해외 ETF, 금리와 주주환원처럼 요즘 자주 마주치는 이슈를 오래 사용할 수 있는 분석 방법으로 바꿉니다.</p></div></header>
+  <section class="section--compact"><div class="container"><div class="category-grid category-grid--four">{guideCategories.map(c=><a class="category-card" href={`#${c.slug}`} style={`background:${c.accent}`}><span class="category-card__number">FRAMEWORK</span><h3>{c.name}</h3><p>{c.description}</p></a>)}</div></div></section>
+  {guideCategories.map(c=><section class="section--compact" id={c.slug}><div class="container"><div class="section-heading"><div><p class="eyebrow">{c.name}</p><h2>{c.description}</h2></div></div><div class="article-grid">{guides.filter(g=>g.data.category===c.slug).map(g=><ArticleCard href={`/guides/${g.data.slug}/`} title={g.data.title} description={g.data.description} label={getGuideCategory(g.data.category)?.name||'가이드'} date={g.data.updatedAt||g.data.publishedAt}/>)}</div></div></section>)}
+</BaseLayout>
