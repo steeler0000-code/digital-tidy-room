@@ -10,6 +10,7 @@ import subprocess
 
 
 PIPELINE = Path("/Users/ashton/Documents/AGI system 설계/Caelus-Market-Briefing")
+ACTIVATOR = Path("/Users/ashton/Documents/ChatGPT/1인 콘텐츠 자동화 공장/openclaw/activate_recurring_guides.py")
 AGENT = "contents_chief_director"
 COMMON = [
     "--agent", AGENT, "--session", "isolated", "--disabled", "--no-deliver",
@@ -72,6 +73,12 @@ def main() -> int:
         name="Caelus AdSense 준비 보고서",
         argv=["python3", "scripts/adsense_readiness.py", "--send"],
         at="2026-09-06T09:00:00+09:00", timeout=1200,
+    )
+    declare(
+        key="caelus.murdoch.guide.activate-recurring.2026-09-07.v1",
+        name="Caelus 머독 정규 가이드 일정 전환",
+        argv=["python3", str(ACTIVATOR)],
+        at="2026-09-07T00:05:00+09:00", timeout=300,
     )
     return 0
 
