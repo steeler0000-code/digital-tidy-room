@@ -242,32 +242,19 @@ blockquote {
   text-decoration: none;
 }
 
-.brand__mark {
-  position: relative;
-  display: grid;
-  width: 36px;
-  height: 36px;
-  place-items: center;
+.brand__symbol {
+  width: 44px;
+  height: 44px;
   border-radius: 11px;
-  background: var(--navy);
-  box-shadow: inset -7px -7px 0 rgba(25, 120, 116, 0.7);
-}
-
-.brand__mark::before,
-.brand__mark::after {
-  position: absolute;
-  width: 14px;
-  height: 2px;
   background: white;
-  content: "";
+  object-fit: cover;
 }
 
-.brand__mark::before {
-  transform: translateY(-4px);
-}
-
-.brand__mark::after {
-  transform: translateY(4px);
+.brand__name {
+  color: #577589;
+  font-size: 1.08rem;
+  font-weight: 800;
+  letter-spacing: 0.045em;
 }
 
 .desktop-nav {
@@ -314,6 +301,17 @@ blockquote {
 
 .site-footer__brand {
   color: white;
+}
+
+.site-footer__brand .brand__name {
+  color: white;
+}
+
+.about-emblem {
+  display: block;
+  width: 148px;
+  height: auto;
+  margin: 0 auto 32px;
 }
 
 .site-footer__description {
