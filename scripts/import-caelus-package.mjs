@@ -18,13 +18,13 @@ function host(url) {
 }
 
 function cleanTitle(date, rawTitle) {
-  const [, month, day] = date.match(/^(\d{4})-(\d{2})-(\d{2})$/) || [];
-  if (!month) throw new Error(`잘못된 패키지 날짜: ${date}`);
+  const [, year, month, day] = date.match(/^(\d{4})-(\d{2})-(\d{2})$/) || [];
+  if (!year) throw new Error(`잘못된 패키지 날짜: ${date}`);
   const topic = String(rawTitle || '')
     .replace(/^\[\d{1,2}\/\d{1,2}\s*이슈\]\s*/, '')
     .replace(/\s*&\s*/g, ' · ')
     .trim();
-  return `${date.slice(0, 4)}년 ${Number(month)}월 ${Number(day)}일 Caelus 마켓 브리핑 — ${topic}`;
+  return `${year}년 ${Number(month)}월 ${Number(day)}일 Caelus 마켓 브리핑 — ${topic}`;
 }
 
 function cleanMaster(source) {
@@ -44,6 +44,14 @@ function cleanMaster(source) {
     output.push(line);
   }
   return output.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+
+function frontmatterYaml(data) {
+  const yaml = stringify(data, { lineWidth: 0 }).trim();
+  return yaml.replace(
+    /^(slug|coverageStart|coverageEnd): ([^\n]+)$/gm,
+    (_, key, value) => `${key}: ${JSON.stringify(String(value).trim())}`
+  );
 }
 
 export async function buildBriefingPackage(packageDir, { publish = false } = {}) {
@@ -124,7 +132,7 @@ export async function writeBriefingPackage(packageDir, siteRoot, options = {}) {
     const name = `slide-${String(index).padStart(2, '0')}.png`;
     await copyFile(path.join(packageDir, 'channels/instagram/cards', name), path.join(assetDir, name));
   }
-  const markdown = `---\n${stringify(output.frontmatter, { lineWidth: 0 }).trim()}\n---\n\n${output.body}\n`;
+  const markdown = `---\n${frontmatterYaml(output.frontmatter)}\n---\n\n${output.body}\n`;
   await writeFile(contentFile, markdown, 'utf8');
   return { ...output, contentFile, assetDir };
 }

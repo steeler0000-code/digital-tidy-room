@@ -18,6 +18,7 @@ test('Caelus 패키지를 사이트 우선 브리핑 계약으로 변환한다',
   await writeFile(path.join(root, 'master.md'), `[8/31 이슈] 제목\n\n발행 시각: 2026.08.31 08 KST\n\n도입 문장입니다. (CL-01)\n\n[IMAGE:slide-01]\n\n이슈 1: 첫 번째\n\n영향과 전망\n\n${'시장 전달 경로를 구체적으로 설명하는 문장입니다. '.repeat(55)}\n\n※ 투자 판단과 책임은 투자자 본인에게 있습니다.\n`);
   const result = await buildBriefingPackage(root, { publish: true });
   assert.equal(result.slug, '2026-08-31');
+  assert.equal(result.frontmatter.title, '2026년 8월 31일 Caelus 마켓 브리핑 — 첫 번째 · 두 번째 · 세 번째');
   assert.equal(result.frontmatter.cards.length, 8);
   assert.equal(result.frontmatter.sources[0].url, 'https://example.com/source');
   assert.equal(result.frontmatter.draft, false);
