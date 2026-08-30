@@ -21,7 +21,7 @@ npm run dev
 npm run build
 ```
 
-`npm run build`는 계산기 테스트, 콘텐츠 수·날짜·출처 검증, Astro 타입 검사, 정적 빌드와 내부 링크 검사를 실행합니다.
+`npm run build`는 계산기와 발행 변환기 테스트, 콘텐츠 최소 수·날짜·출처·카드 검증, Astro 타입 검사, 정적 빌드와 공개 문서 내부 링크 검사를 실행합니다.
 
 ## 콘텐츠 위치
 
@@ -32,6 +32,9 @@ npm run build
 - 투자 도구 등록: `src/data/tools.ts`
 - 계산 로직: `src/lib/calculators/index.ts`
 - 콘텐츠 입력 계약: `docs/CONTENT_CONTRACT.md`
+- 승인형 발행 순서: `docs/PUBLISHING.md`
+- 브리핑 패키지 변환기: `scripts/import-caelus-package.mjs`
+- 심층 가이드 패키지 변환기: `scripts/import-caelus-guide.mjs`
 
 ## 배포
 
@@ -43,7 +46,7 @@ npm run deploy:check
 npm run deploy
 ```
 
-매일 실행되던 GitHub 예약 발행은 중지되어 있습니다. OpenClaw 자동 발행은 사이트가 안정된 뒤 별도 단계에서 콘텐츠 계약과 사람 승인 절차에 맞춰 연결합니다.
+GitHub 예약 발행은 수동 검증 전용입니다. OpenClaw 머독 일정은 전용 Telegram과 최소 권한 자격증명 연결 전까지 비활성 상태로 유지하며, 활성화 후에도 사이트 공개 검증을 통과해야 외부 티저를 발행합니다.
 
 ## 광고와 개인정보
 

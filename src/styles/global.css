@@ -314,6 +314,53 @@ blockquote {
   margin: 0 auto 32px;
 }
 
+.card-deck {
+  margin: 48px 0;
+}
+
+.card-deck__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.card-explainer {
+  overflow: hidden;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: white;
+  box-shadow: var(--shadow-soft);
+}
+
+.card-explainer img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #eef3f6;
+}
+
+.card-explainer figcaption {
+  padding: 20px;
+}
+
+.card-explainer figcaption > span {
+  color: var(--teal);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.card-explainer h3 {
+  margin: 8px 0 10px;
+}
+
+.card-explainer p {
+  margin: 0;
+  color: var(--muted);
+}
+
 .site-footer__description {
   max-width: 440px;
   margin-top: 18px;
@@ -1135,6 +1182,7 @@ blockquote {
 
   .category-grid,
   .article-grid,
+  .card-deck__grid,
   .sitemap-grid {
     grid-template-columns: 1fr;
   }
