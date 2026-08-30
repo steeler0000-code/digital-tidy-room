@@ -76,7 +76,7 @@
 - 호출 허용 전문 에이전트: `market_researcher`, `content_editor`, `content_publisher`
 - 사이트 checkout: 머독 전용 작업공간 아래 `repos/caelus-site`
 - GitHub 인증: `digital-tidy-room` 저장소에만 쓰기 가능한 deploy key
-- Cloudflare 인증: 해당 계정의 Workers Scripts 편집만 허용한 API token
+- Cloudflare Pages 배포: GitHub `main` 연동 배포. Workers Scripts token은 운영 도메인 발행 경로에 사용하지 않음
 - 비밀값 저장: `~/.openclaw/.env`와 `~/.openclaw/credentials/contents_chief_director/`만 사용
 
 ## 활성 일정
@@ -99,7 +99,7 @@
 - 비공개 `draft: true` 시험 가이드의 승인 버튼 4개
 - 카드 이미지 8장과 요약 이미지 1장 생성
 - 사이트 콘텐츠·링크·Astro 빌드 검증
-- Cloudflare Worker 재배포와 `caelus-h.com`, `sitemap.xml` HTTP 200 확인
+- Cloudflare Pages 배포와 `caelus-h.com`, `sitemap.xml` HTTP 200 확인
 - GitHub deploy key 쓰기 권한을 `git push --dry-run`으로 확인
 
 ## 장애 복구 절차
@@ -107,7 +107,7 @@
 1. Telegram 장애: `openclaw channels status --probe`에서 `murdoch` 계정의 `running`, `probe.ok`, `lastError`를 확인한다. 토큰을 메시지나 로그에 출력하지 않는다.
 2. Gateway 장애: `openclaw gateway status`로 상태를 확인하고 필요할 때만 `openclaw gateway restart`를 실행한다. 광범위한 자동 수정은 사용하지 않는다.
 3. 일정 중복: declaration key가 같은 작업은 새로 만들지 않는다. `caelus.daily.*` 기존 Khan 작업이 비활성인지 확인한다.
-4. 사이트 발행 장애: 외부 채널을 시작하지 않고 Cloudflare 배포, 공개 URL 200, 본문 일치 순서로 복구한다.
+4. 사이트 발행 장애: 외부 채널을 시작하지 않고 GitHub push, Cloudflare Pages 배포, 공개 URL 200, 본문 일치 순서로 복구한다. 인프라 오류에는 원고 `repair-output`을 반복하지 않고 `retry-publish`를 사용한다.
 5. GitHub 장애: 머독 전용 checkout의 deploy key와 저장소 단일 쓰기 범위를 확인한다. 사용자 기본 SSH 키로 우회하지 않는다.
 6. 외부 채널 일부 실패: 성공 채널은 다시 게시하지 않고 `run.json`에서 실패 채널만 재시도한다.
 7. 토큰 교체: 새 값은 로컬 보안 입력 도구로 `~/.openclaw/.env`에 저장하고 Gateway를 재시작한다. 저장소·Telegram·실행 로그에 토큰을 남기지 않는다.

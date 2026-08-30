@@ -1,6 +1,6 @@
 # Caelus
 
-한국 독자를 위해 국내·미국 주식, ETF, 금리·환율과 기업 공시를 설명하는 정적 경제·투자 정보 사이트입니다. Astro로 빌드하고 Cloudflare Workers Static Assets에 배포합니다.
+한국 독자를 위해 국내·미국 주식, ETF, 금리·환율과 기업 공시를 설명하는 정적 경제·투자 정보 사이트입니다. Astro로 빌드하고 GitHub 연동 Cloudflare Pages에 배포합니다.
 
 ## 현재 공개 콘텐츠
 

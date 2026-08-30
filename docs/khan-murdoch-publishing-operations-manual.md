@@ -57,7 +57,7 @@ Khan은 전체 시스템의 정책·보안·비용·중대 장애를 감독한�
 
 모든 브리핑과 심층 가이드는 아래 순서를 따른다.
 
-`자료 조사 → 출처·claim 검증 → 편집·카드 제작 → Hard QA → Telegram 미리보기 → 20분 승인창 → 사이트 빌드 → Cloudflare 배포 → 공개 URL 200·본문 검증 → GitHub push → 외부 채널 티저 발행 → 외부 URL을 사이트 메타데이터에 반영 → 결과 보고`
+`자료 조사 → 출처·claim 검증 → 편집·카드 제작 → Hard QA → Telegram 미리보기 → 20분 승인창 → 사이트 빌드 → 최신 원격 반영 → GitHub push → Cloudflare Pages 배포 대기 → 공개 URL 200·본문 검증 → 외부 채널 티저 발행 → 외부 URL을 사이트 메타데이터에 반영 → 결과 보고`
 
 반드시 지켜야 할 원칙:
 
@@ -68,6 +68,7 @@ Khan은 전체 시스템의 정책·보안·비용·중대 장애를 감독한�
 5. 일부 채널만 실패하면 성공한 채널은 유지하고 실패 채널만 재시도한다.
 6. 외부 채널 URL을 확보하면 사이트 메타데이터에 반영하는 후속 커밋을 수행한다.
 7. `draft: true` 시험 패키지는 공개 사이트와 외부 채널에 발행하지 않는다.
+8. Pages 운영 도메인을 갱신하기 위해 별도 `wrangler deploy`를 실행하지 않는다.
 
 ## Telegram 승인 정책
 
@@ -151,6 +152,7 @@ Khan은 전체 시스템의 정책·보안·비용·중대 장애를 감독한�
 CAELUS_TELEGRAM_ACCOUNT=murdoch python3 scripts/run_daily.py generate
 CAELUS_TELEGRAM_ACCOUNT=murdoch python3 scripts/run_daily.py preview
 CAELUS_TELEGRAM_ACCOUNT=murdoch python3 scripts/run_daily.py silent-approve
+CAELUS_TELEGRAM_ACCOUNT=murdoch python3 scripts/run_daily.py retry-publish --date YYYY-MM-DD
 ```
 
 ### 심층 가이드
@@ -167,7 +169,7 @@ CAELUS_TELEGRAM_ACCOUNT=murdoch python3 scripts/run_guide.py approve
 CAELUS_TELEGRAM_ACCOUNT=murdoch python3 scripts/adsense_readiness.py --send
 ```
 
-이 명령들은 예약 작업이나 유효한 사용자 승인 흐름에서만 사용한다. Khan과 머독은 직접 `git`, `wrangler`, 브라우저 게시 명령을 조합해 발행 순서를 우회하지 않는다.
+`retry-publish`는 사이트 배포·공개 URL 검증 같은 인프라 오류가 해결된 뒤에만 사용한다. 원고 QA 오류에는 사용하지 않는다. 이 명령들은 예약 작업이나 유효한 사용자 승인 흐름에서만 사용하며, Khan과 머독은 직접 `git`, `wrangler`, 브라우저 게시 명령을 조합해 발행 순서를 우회하지 않는다.
 
 ## 상태 확인 절차
 
