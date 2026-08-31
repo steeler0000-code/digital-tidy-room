@@ -36,11 +36,17 @@ async function verifyPublic(generatedAt) {
 }
 
 try {
+  const trackedChanges = run('git', ['status', '--porcelain', '--untracked-files=no'], true);
+  if (trackedChanges) throw new Error('추적 파일에 미커밋 변경이 있어 자동 갱신을 중단했습니다.');
+  run('git', ['fetch', 'origin', 'main']);
+  run('git', ['rebase', 'origin/main']);
   run('npm', ['run', 'dashboard:refresh']);
   run('npm', ['run', 'build']);
   const snapshot = JSON.parse(await readFile(snapshotPath, 'utf8'));
   run('git', ['add', '--', snapshotPath]);
   run('git', ['commit', '-m', `Update market dashboard ${snapshot.generatedAt.slice(0, 10)}`]);
+  run('git', ['fetch', 'origin', 'main']);
+  run('git', ['rebase', 'origin/main']);
   run('git', ['push', 'origin', 'main']);
   await verifyPublic(snapshot.generatedAt);
   await notify(`Caelus 대시보드 갱신 완료\n점수: ${snapshot.score}/8 (${snapshot.statusLabel})\n${siteUrl}/dashboard/`);
