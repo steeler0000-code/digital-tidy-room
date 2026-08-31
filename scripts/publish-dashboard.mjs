@@ -1,5 +1,7 @@
 import { spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
+import { homedir } from 'node:os';
+import path from 'node:path';
 import process from 'node:process';
 
 const root = process.cwd();
@@ -14,7 +16,13 @@ function run(command, args, capture = false) {
 
 async function notify(text) {
   const token = process.env.MURDOCH_TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.MURDOCH_TELEGRAM_CHAT_ID;
+  let chatId = process.env.MURDOCH_TELEGRAM_CHAT_ID;
+  if (!chatId) {
+    try {
+      const config = JSON.parse(await readFile(path.join(homedir(), '.openclaw', 'openclaw.json'), 'utf8'));
+      chatId = config.channels?.telegram?.accounts?.murdoch?.defaultTo;
+    } catch {}
+  }
   if (!token || !chatId) return;
   await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: 'POST', headers: { 'content-type': 'application/json' },
