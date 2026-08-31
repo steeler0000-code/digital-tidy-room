@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-08-31T20:08:57+09:00",
-  "score": 1,
+  "generatedAt": "2026-08-31T21:41:23+09:00",
+  "score": 0,
   "status": "mixed",
   "statusLabel": "혼조",
-  "summary": "금리·환율·물가·유동성 지표가 한 방향을 가리키지 않습니다. 단일 지표를 매매 신호로 삼기보다 다음 공표에서 방향이 확인되는지 점검할 구간입니다.",
+  "summary": "금리·물가·유동성 지표가 한 방향을 가리키지 않습니다. 단일 지표를 매매 신호로 삼기보다 다음 공표에서 방향이 확인되는지 점검할 구간입니다.",
   "contributions": [
     {
       "label": "금리",
       "score": -1
     },
     {
-      "label": "물가·환율",
-      "score": 1
+      "label": "물가",
+      "score": 0
     },
     {
       "label": "유동성",
@@ -41,36 +41,6 @@
         "name": "한국은행 ECOS",
         "url": "https://ecos.bok.or.kr/",
         "series": "722Y001 / 0101000"
-      }
-    },
-    {
-      "id": "usd-krw",
-      "region": "KR",
-      "label": "원·달러 환율",
-      "value": 1376.5,
-      "displayValue": "1,376.5원",
-      "changeLabel": "60거래일 중앙값 대비 -7.5%",
-      "direction": "positive",
-      "contribution": 1,
-      "asOf": "2026-08-31",
-      "frequency": "일간",
-      "description": "원화 환산 수익과 수입 물가에 함께 영향을 주는 변수입니다.",
-      "history": [
-        1415.2,
-        1411,
-        1402.5,
-        1393,
-        1383.6,
-        1380.6,
-        1383.1,
-        1384.6,
-        1380.3,
-        1376.5
-      ],
-      "source": {
-        "name": "한국은행 ECOS",
-        "url": "https://ecos.bok.or.kr/",
-        "series": "731Y001 / 0000001"
       }
     },
     {
@@ -203,36 +173,6 @@
         "name": "FRED",
         "url": "https://fred.stlouisfed.org/series/M2SL",
         "series": "M2SL"
-      }
-    },
-    {
-      "id": "fed-assets",
-      "region": "US",
-      "label": "연준 총자산",
-      "value": 0.4,
-      "displayValue": "+0.4%",
-      "changeLabel": "13주 변화율",
-      "direction": "positive",
-      "contribution": 0,
-      "asOf": "2026-08-26",
-      "frequency": "주간",
-      "description": "연준 대차대조표 크기의 13주 변화로 유동성 방향을 봅니다.",
-      "history": [
-        6735645,
-        6724564,
-        6735609,
-        6743028,
-        6747378,
-        6738190,
-        6748567,
-        6759955,
-        6745699,
-        6730912
-      ],
-      "source": {
-        "name": "FRED",
-        "url": "https://fred.stlouisfed.org/series/WALCL",
-        "series": "WALCL"
       }
     }
   ]

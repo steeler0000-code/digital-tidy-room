@@ -6,7 +6,9 @@ const { detailed = false } = Astro.props;
 const updatedAt = new Intl.DateTimeFormat('ko-KR', {
   timeZone: 'Asia/Seoul', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
 }).format(new Date(dashboard.generatedAt));
-const gaugePosition = Math.max(6, Math.min(94, ((dashboard.score + 8) / 16) * 100));
+const maxScore = dashboard.metrics.length;
+const gaugePosition = Math.max(6, Math.min(94, ((dashboard.score + maxScore) / (maxScore * 2)) * 100));
+const cpi = dashboard.metrics.find((metric) => metric.id === 'kr-cpi');
 ---
 
 <section class:list={['market-dashboard', detailed && 'market-dashboard--detailed']} aria-labelledby="market-dashboard-title" data-dashboard-generated-at={dashboard.generatedAt}>
@@ -14,7 +16,7 @@ const gaugePosition = Math.max(6, Math.min(94, ((dashboard.score + 8) / 16) * 10
     <div>
       <p class="eyebrow">Market dashboard</p>
       <h1 id="market-dashboard-title">{detailed ? '시장 환경 대시보드' : '오늘의 시장 환경을 한눈에'}</h1>
-      <p>금리·환율·물가·유동성 8개 지표를 한국 투자자의 시선으로 보여줍니다.</p>
+      <p>금리·물가·유동성 6개 지표를 한국 투자자의 시선으로 보여줍니다.</p>
     </div>
     <div class="dashboard-freshness"><span aria-hidden="true"></span>{updatedAt} KST 갱신</div>
   </div>
@@ -22,7 +24,7 @@ const gaugePosition = Math.max(6, Math.min(94, ((dashboard.score + 8) / 16) * 10
   <div class="dashboard-grid">
     <article class="regime-card">
       <div class="regime-card__head"><span>시장 환경 점검</span><strong class={`status status--${dashboard.status}`}>{dashboard.statusLabel}</strong></div>
-      <div class="regime-score"><strong>{dashboard.score > 0 ? '+' : ''}{dashboard.score}</strong><span>/ 8</span></div>
+      <div class="regime-score"><strong>{dashboard.score > 0 ? '+' : ''}{dashboard.score}</strong><span>/ {maxScore}</span></div>
       <div class="regime-gauge" aria-label={`시장 환경 점수 ${dashboard.score}점, ${dashboard.statusLabel}`}>
         <span class="regime-gauge__marker" style={`left:${gaugePosition}%`}></span>
       </div>
@@ -53,7 +55,7 @@ const gaugePosition = Math.max(6, Math.min(94, ((dashboard.score + 8) / 16) * 10
   {!detailed && (
     <div class="dashboard-takeaways">
       <div><span>01</span><p><strong>금리</strong>한국 기준금리 인상으로 조달 비용 부담이 커졌습니다.</p></div>
-      <div><span>02</span><p><strong>환율</strong>원·달러 환율은 8월 중 고점에서 낮아졌습니다.</p></div>
+      <div><span>02</span><p><strong>물가</strong>한국 소비자물가는 최신 공표 기준 {cpi?.displayValue}입니다.</p></div>
       <div><span>03</span><p><strong>유동성</strong>미국 M2 증가율이 3개월 전보다 높아졌습니다.</p></div>
       <a class="button" href="/briefings/">오늘의 마켓 브리핑 읽기</a>
     </div>

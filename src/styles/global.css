@@ -450,7 +450,7 @@ blockquote {
 .contribution-list .is-positive { color: #70d6ad; }
 .contribution-list .is-negative { color: #ff9898; }
 
-.metric-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; }
+.metric-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
 .metric-card { min-width: 0; padding: 18px; box-shadow: 0 8px 24px rgba(20,48,80,.045); }
 .metric-card__top, .metric-card__source { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #7a8798; font-size: .7rem; }
 .region { padding: 3px 7px; border-radius: 6px; background: #eaf1fb; color: #315f9e; font-weight: 850; }

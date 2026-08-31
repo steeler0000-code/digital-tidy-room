@@ -80,10 +80,9 @@ async function refresh() {
   const monthStart = shiftMonth(monthNow, -16);
   const monthSplit = shiftMonth(monthStart, 8);
   const monthSplitNext = shiftMonth(monthStart, 9);
-  const [dgs10, dgs2, m2sl, walcl, krRate, krFx, krCpi] = await Promise.all([
-    fred('DGS10'), fred('DGS2'), fred('M2SL'), fred('WALCL'),
+  const [dgs10, dgs2, m2sl, krRate, krCpi] = await Promise.all([
+    fred('DGS10'), fred('DGS2'), fred('M2SL'),
     ecosDailyHistory('722Y001', '0101000'),
-    ecosDailyHistory('731Y001', '0000001'),
     Promise.all([
       ecos('901Y009', 'M', compactMonth(monthStart), compactMonth(monthSplit), '0'),
       ecos('901Y009', 'M', compactMonth(monthSplitNext), compactMonth(monthNow), '0')
@@ -102,18 +101,6 @@ async function refresh() {
     contribution: rateDelta >= .25 ? -1 : rateDelta <= -.25 ? 1 : 0,
     direction: rateDelta > 0 ? 'negative' : rateDelta < 0 ? 'positive' : 'neutral',
     history: [rateReference, rateReference, rateReference, rateNow.value]
-  });
-
-  const fxNow = latest(krFx);
-  const fxRows = krFx.slice(-60);
-  const fxValues = fxRows.map((row) => row.value);
-  const fxReference = [...fxValues].sort((a, b) => a - b)[Math.floor(fxValues.length / 2)];
-  const fxDelta = pct(fxNow.value, fxReference);
-  set('usd-krw', {
-    value: fxNow.value, displayValue: `${fxNow.value.toLocaleString('ko-KR', { maximumFractionDigits: 1 })}원`, asOf: fxNow.date,
-    changeLabel: `60거래일 중앙값 대비 ${fxDelta >= 0 ? '+' : ''}${fxDelta.toFixed(1)}%`,
-    contribution: fxDelta >= 2 ? -1 : fxDelta <= -2 ? 1 : 0,
-    direction: fxDelta > 0 ? 'negative' : fxDelta < 0 ? 'positive' : 'neutral', history: fxValues.slice(-10)
   });
 
   const cpiNowIndex = latest(krCpi);
@@ -157,13 +144,6 @@ async function refresh() {
     direction: m2Delta > 0 ? 'positive' : m2Delta < 0 ? 'negative' : 'neutral'
   });
 
-  const fedNow = latest(walcl); const fedRef = walcl.at(-14); const fedDelta = pct(fedNow.value, fedRef.value);
-  set('fed-assets', {
-    value: round(fedDelta, 1), displayValue: `${fedDelta >= 0 ? '+' : ''}${fedDelta.toFixed(1)}%`, asOf: fedNow.date,
-    contribution: fedDelta >= 1 ? 1 : fedDelta <= -1 ? -1 : 0,
-    direction: fedDelta > 0 ? 'positive' : fedDelta < 0 ? 'negative' : 'neutral', history: walcl.slice(-10).map((row) => row.value)
-  });
-
   try {
     const bokHtml = await fetchText('https://www.bok.or.kr/portal/main/main.do');
     const bokText = bokHtml.replace(/<[^>]+>/g, ' ').replace(/&[^;]+;/g, ' ').replace(/\s+/g, ' ');
@@ -188,18 +168,18 @@ async function refresh() {
   current.statusLabel = current.status === 'favorable' ? '우호' : current.status === 'caution' ? '경계' : '혼조';
   const contributionGroups = [
     { label: '금리', ids: ['kr-base-rate', 'us-10y', 'us-yield-spread'] },
-    { label: '물가·환율', ids: ['usd-krw', 'kr-cpi'] },
-    { label: '유동성', ids: ['kr-m2', 'us-m2', 'fed-assets'] }
+    { label: '물가', ids: ['kr-cpi'] },
+    { label: '유동성', ids: ['kr-m2', 'us-m2'] }
   ];
   current.contributions = contributionGroups.map((group) => ({
     label: group.label,
     score: current.metrics.filter((item) => group.ids.includes(item.id)).reduce((sum, item) => sum + item.contribution, 0)
   }));
   current.summary = current.status === 'favorable'
-    ? '금리·환율·물가·유동성 지표 중 우호한 변화가 더 많습니다. 다만 이 점수는 매매 신호가 아니며 개별 자산의 평가가치와 실적을 별도로 확인해야 합니다.'
+    ? '금리·물가·유동성 지표 중 우호한 변화가 더 많습니다. 다만 이 점수는 매매 신호가 아니며 개별 자산의 평가가치와 실적을 별도로 확인해야 합니다.'
     : current.status === 'caution'
-      ? '금리·환율·물가·유동성 지표 중 부담 방향의 변화가 더 많습니다. 특정 자산의 즉시 매도 신호로 해석하지 않고 다음 공표와 실적을 확인합니다.'
-      : '금리·환율·물가·유동성 지표가 한 방향을 가리키지 않습니다. 단일 지표를 매매 신호로 삼기보다 다음 공표에서 방향이 확인되는지 점검할 구간입니다.';
+      ? '금리·물가·유동성 지표 중 부담 방향의 변화가 더 많습니다. 특정 자산의 즉시 매도 신호로 해석하지 않고 다음 공표와 실적을 확인합니다.'
+      : '금리·물가·유동성 지표가 한 방향을 가리키지 않습니다. 단일 지표를 매매 신호로 삼기보다 다음 공표에서 방향이 확인되는지 점검할 구간입니다.';
   current.generatedAt = kstTimestamp();
   return current;
 }

@@ -4,9 +4,10 @@ import test from 'node:test';
 
 const dashboard = JSON.parse(await readFile(new URL('../src/data/dashboard.json', import.meta.url), 'utf8'));
 
-test('대시보드는 8개 고유 지표와 공식 HTTPS 출처를 가진다', () => {
-  assert.equal(dashboard.metrics.length, 8);
-  assert.equal(new Set(dashboard.metrics.map((metric) => metric.id)).size, 8);
+test('대시보드는 6개 고유 지표와 공식 HTTPS 출처를 가진다', () => {
+  assert.equal(dashboard.metrics.length, 6);
+  assert.equal(new Set(dashboard.metrics.map((metric) => metric.id)).size, 6);
+  assert.ok(!dashboard.metrics.some((metric) => ['usd-krw', 'fed-assets'].includes(metric.id)));
   for (const metric of dashboard.metrics) {
     assert.match(metric.source.url, /^https:\/\//);
     assert.ok(metric.source.name);
