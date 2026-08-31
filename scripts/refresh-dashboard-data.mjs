@@ -1,5 +1,4 @@
 import { readFile, rename, writeFile } from 'node:fs/promises';
-import { homedir } from 'node:os';
 import path from 'node:path';
 import process from 'node:process';
 
@@ -104,7 +103,7 @@ async function refresh() {
   });
 
   const cpiNowIndex = latest(krCpi);
-  const cpiPrior = findDate(krCpi, cpiNowIndex.date.replace('2026', '2025'));
+  const cpiPrior = findDate(krCpi, shiftMonth(cpiNowIndex.date, -12));
   const cpiYoy = pct(cpiNowIndex.value, cpiPrior.value);
   const cpiReferenceDate = shiftMonth(cpiNowIndex.date, -3);
   const cpiReference = pct(findDate(krCpi, cpiReferenceDate).value, findDate(krCpi, shiftMonth(cpiReferenceDate, -12)).value);
@@ -134,8 +133,8 @@ async function refresh() {
     history: dgs10.slice(-10).map((row, index) => round(row.value - dgs2.slice(-10)[index].value))
   });
 
-  const m2Now = latest(m2sl); const m2Prior = findDate(m2sl, m2Now.date.replace('2026', '2025'));
-  const m2ThreeMonths = m2sl.at(-4); const m2ThreePrior = findDate(m2sl, m2ThreeMonths.date.replace('2026', '2025'));
+  const m2Now = latest(m2sl); const m2Prior = findDate(m2sl, shiftMonth(m2Now.date, -12));
+  const m2ThreeMonths = m2sl.at(-4); const m2ThreePrior = findDate(m2sl, shiftMonth(m2ThreeMonths.date, -12));
   const m2Yoy = pct(m2Now.value, m2Prior.value); const m2YoyRef = pct(m2ThreeMonths.value, m2ThreePrior.value); const m2Delta = m2Yoy - m2YoyRef;
   set('us-m2', {
     value: round(m2Yoy), displayValue: `${m2Yoy.toFixed(1)}%`, asOf: m2Now.date,
@@ -184,22 +183,6 @@ async function refresh() {
   return current;
 }
 
-async function notifyFailure(error) {
-  const token = process.env.MURDOCH_TELEGRAM_BOT_TOKEN;
-  let chatId = process.env.MURDOCH_TELEGRAM_CHAT_ID;
-  if (!chatId) {
-    try {
-      const config = JSON.parse(await readFile(path.join(homedir(), '.openclaw', 'openclaw.json'), 'utf8'));
-      chatId = config.channels?.telegram?.accounts?.murdoch?.defaultTo;
-    } catch {}
-  }
-  if (!token || !chatId) return;
-  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-    method: 'POST', headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ chat_id: chatId, text: `Caelus 대시보드 갱신 실패: ${error.message}` })
-  });
-}
-
 try {
   const refreshed = await refresh();
   const serialized = `${JSON.stringify(refreshed, null, 2)}\n`;
@@ -211,7 +194,6 @@ try {
     console.log(`대시보드 갱신 완료: ${refreshed.generatedAt}, 점수 ${refreshed.score}`);
   }
 } catch (error) {
-  await notifyFailure(error).catch(() => {});
   console.error(`대시보드 갱신 실패: ${error.stack || error.message}`);
   process.exitCode = 1;
 }

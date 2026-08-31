@@ -15,6 +15,7 @@
     "validate:links": "node scripts/validate-links.mjs",
     "dashboard:refresh": "node scripts/refresh-dashboard-data.mjs",
     "dashboard:publish": "node scripts/publish-dashboard.mjs",
+    "dashboard:report": "node scripts/report-dashboard-status.mjs",
     "test": "node --test scripts/calculators.test.mjs scripts/dashboard-data.test.mjs scripts/import-caelus-package.test.mjs scripts/import-caelus-guide.test.mjs"
   },
   "engines": {

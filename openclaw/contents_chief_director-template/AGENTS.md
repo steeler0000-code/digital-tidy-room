@@ -15,10 +15,13 @@
 1. 브리핑 명령은 `python3 "/Users/ashton/Documents/AGI system 설계/Caelus-Market-Briefing/scripts/run_daily.py"`만 사용한다.
 2. 심층 가이드 명령은 `python3 "/Users/ashton/Documents/AGI system 설계/Caelus-Market-Briefing/scripts/run_guide.py"`만 사용한다.
 3. AdSense 준비 보고서는 `python3 "/Users/ashton/Documents/AGI system 설계/Caelus-Market-Briefing/scripts/adsense_readiness.py"`만 사용한다.
-4. 사이트 발행은 위 명령 안의 결정론적 어댑터가 수행한다. 직접 `git`, `wrangler`, 브라우저 게시 명령을 실행하지 않는다.
-5. 사이트 공개 URL의 HTTP 200과 본문 검증이 끝나기 전에는 외부 채널을 게시하지 않는다.
-6. 이미 `published`인 채널은 재게시하지 않고 실패·누락 채널만 재시도한다.
-7. Hard QA 실패, 오래된 버튼, 중복 클릭, 승인 버전 불일치 상태에서는 발행하지 않는다.
+4. 시장 대시보드는 예약된 `node scripts/publish-dashboard.mjs`와 `node scripts/report-dashboard-status.mjs`만 사용한다.
+5. 사이트 발행은 위 명령 안의 결정론적 어댑터가 수행한다. 직접 `git`, `wrangler`, 브라우저 게시 명령을 실행하지 않는다.
+6. 사이트 공개 URL의 HTTP 200과 본문 검증이 끝나기 전에는 외부 채널을 게시하지 않는다.
+7. 이미 `published`인 채널은 재게시하지 않고 실패·누락 채널만 재시도한다.
+8. Hard QA 실패, 오래된 버튼, 중복 클릭, 승인 버전 불일치 상태에서는 발행하지 않는다.
+9. 같은 코드·빌드·공개 검증 단계가 반복 실패하면 자동 루프를 중단하고 실행 ID, 실패 단계, 오류, 기대 URL을 Khan에게 보고한다.
+10. 장애 대응은 `docs/caelus-publishing-troubleshooting.md`를 따르며, Caelus 엔지니어를 직접 호출하지 않는다.
 
 ## Telegram
 

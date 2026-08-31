@@ -9,37 +9,59 @@ import subprocess
 
 
 SITE = Path("/Users/ashton/Documents/ChatGPT/1인 콘텐츠 자동화 공장")
-COMMAND = [
-    "openclaw", "cron", "add",
-    "--declaration-key", "caelus.murdoch.dashboard.refresh.v1",
-    "--name", "Caelus 머독 06:00 시장 대시보드 갱신",
-    "--display-name", "Caelus 머독 06:00 시장 대시보드 갱신",
-    "--agent", "contents_chief_director",
-    "--session", "isolated",
-    "--cron", "0 6 * * 1-5",
-    "--tz", "Asia/Seoul",
-    "--exact",
-    "--command-cwd", str(SITE),
-    "--command-argv", json.dumps(["node", "scripts/publish-dashboard.mjs"], ensure_ascii=False),
-    "--timeout-seconds", "1200",
-    "--no-output-timeout-seconds", "900",
-    "--no-deliver",
-    "--output-max-bytes", "12000",
-    "--json",
+JOBS = [
+    {
+        "key": "caelus.murdoch.dashboard.refresh.v1",
+        "name": "Caelus 머독 06:00 시장 대시보드 갱신",
+        "cron": "0 6 * * 1-5",
+        "argv": ["node", "scripts/publish-dashboard.mjs"],
+        "timeout": "1200",
+    },
+    {
+        "key": "caelus.murdoch.dashboard.report.v1",
+        "name": "Caelus 머독 07:05 대시보드 결과 보고",
+        "cron": "5 7 * * 1-5",
+        "argv": ["node", "scripts/report-dashboard-status.mjs"],
+        "timeout": "120",
+    },
 ]
 
 
+def command(job: dict[str, object]) -> list[str]:
+    return [
+        "openclaw", "cron", "add",
+        "--declaration-key", str(job["key"]),
+        "--name", str(job["name"]),
+        "--display-name", str(job["name"]),
+        "--agent", "contents_chief_director",
+        "--session", "isolated",
+        "--cron", str(job["cron"]),
+        "--tz", "Asia/Seoul",
+        "--exact",
+        "--command-cwd", str(SITE),
+        "--command-argv", json.dumps(job["argv"], ensure_ascii=False),
+        "--timeout-seconds", str(job["timeout"]),
+        "--no-output-timeout-seconds", str(job["timeout"]),
+        "--no-deliver",
+        "--output-max-bytes", "12000",
+        "--json",
+    ]
+
+
 def main() -> int:
-    completed = subprocess.run(COMMAND, check=False, text=True, capture_output=True, timeout=60)
-    if completed.returncode:
-        raise SystemExit((completed.stderr or completed.stdout)[-1000:])
-    result = json.loads(completed.stdout)
-    job = result.get("job", result)
-    print(json.dumps({
-        "declarationKey": "caelus.murdoch.dashboard.refresh.v1",
-        "id": job.get("id"),
-        "enabled": job.get("enabled"),
-    }, ensure_ascii=False))
+    installed = []
+    for declaration in JOBS:
+        completed = subprocess.run(command(declaration), check=False, text=True, capture_output=True, timeout=60)
+        if completed.returncode:
+            raise SystemExit((completed.stderr or completed.stdout)[-1000:])
+        result = json.loads(completed.stdout)
+        job = result.get("job", result)
+        installed.append({
+            "declarationKey": declaration["key"],
+            "id": job.get("id"),
+            "enabled": job.get("enabled"),
+        })
+    print(json.dumps(installed, ensure_ascii=False))
     return 0
 
 

@@ -42,6 +42,16 @@ Khan은 전체 시스템의 정책·보안·비용·중대 장애를 감독한�
 - 머독은 결정론적 Python 발행 명령만 사용한다.
 - 사이트 공개가 검증되기 전에는 네이버·티스토리·Instagram 발행을 시작하지 않는다.
 
+### Caelus 엔지니어 — 사이트 기술 담당자
+
+Caelus 엔지니어(`caelus_site_engineer`)는 Khan이 코드·빌드·Cloudflare Pages 공개 경로의 진단이나 수정이 필요할 때만 호출한다.
+
+- 머독의 일상 발행이나 승인 판단을 대신하지 않는다.
+- 격리된 checkout에서 재현, 최소 수정, 테스트, 변경 보고서 작성까지만 수행한다.
+- 운영 `main` 반영과 배포는 사용자의 명시적 승인 뒤 Khan이 수행한다.
+- 머독은 Caelus 엔지니어를 직접 호출하지 않고 반복 장애를 Khan에게 전달한다.
+- 상세 절차는 `docs/caelus-publishing-troubleshooting.md`를 기준으로 한다.
+
 ## 운영 경로
 
 - Caelus 발행 파이프라인: `/Users/ashton/Documents/AGI system 설계/Caelus-Market-Briefing`
@@ -169,6 +179,10 @@ CAELUS_TELEGRAM_ACCOUNT=murdoch python3 scripts/run_guide.py approve
 CAELUS_TELEGRAM_ACCOUNT=murdoch python3 scripts/adsense_readiness.py --send
 ```
 
+### 시장 대시보드
+
+사이트 저장소에서 평일 06:00에 `node scripts/publish-dashboard.mjs`가 갱신·빌드·공개 검증을 수행한다. 정상 결과는 상태 파일에 기록하고, 조용한 시간이 끝난 07:05에 `node scripts/report-dashboard-status.mjs`가 한 번만 Telegram으로 보고한다. 실패는 긴급 장애로 즉시 보고할 수 있다.
+
 `retry-publish`는 사이트 배포·공개 URL 검증 같은 인프라 오류가 해결된 뒤에만 사용한다. 원고 QA 오류에는 사용하지 않는다. 이 명령들은 예약 작업이나 유효한 사용자 승인 흐름에서만 사용하며, Khan과 머독은 직접 `git`, `wrangler`, 브라우저 게시 명령을 조합해 발행 순서를 우회하지 않는다.
 
 ## 상태 확인 절차
@@ -197,6 +211,8 @@ openclaw cron list --all --agent contents_chief_director
 - https://caelus-h.com/robots.txt
 
 ## 장애별 대응
+
+상세 진단 순서, 실제 발생 사례, 재시도·중단 기준은 `docs/caelus-publishing-troubleshooting.md`를 따른다.
 
 | 상황 | 머독의 행동 | Khan의 행동 |
 |---|---|---|

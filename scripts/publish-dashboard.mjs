@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { readFile } from 'node:fs/promises';
+import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import path from 'node:path';
 import process from 'node:process';
@@ -7,6 +7,7 @@ import process from 'node:process';
 const root = process.cwd();
 const siteUrl = process.env.SITE_URL || 'https://caelus-h.com';
 const snapshotPath = 'src/data/dashboard.json';
+const statePath = process.env.DASHBOARD_STATE_PATH || path.join(root, '.state', 'dashboard-publish.json');
 
 function run(command, args, capture = false) {
   const result = spawnSync(command, args, { cwd: root, encoding: 'utf8', stdio: capture ? 'pipe' : 'inherit' });
@@ -28,6 +29,13 @@ async function notify(text) {
     method: 'POST', headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ chat_id: chatId, text })
   });
+}
+
+async function writeState(state) {
+  await mkdir(path.dirname(statePath), { recursive: true });
+  const temp = `${statePath}.tmp`;
+  await writeFile(temp, `${JSON.stringify({ ...state, finishedAt: new Date().toISOString() }, null, 2)}\n`, 'utf8');
+  await rename(temp, statePath);
 }
 
 async function verifyPublic(generatedAt) {
@@ -57,8 +65,17 @@ try {
   run('git', ['rebase', 'origin/main']);
   run('git', ['push', 'origin', 'main']);
   await verifyPublic(snapshot.generatedAt);
-  await notify(`Caelus 대시보드 갱신 완료\n점수: ${snapshot.score}/8 (${snapshot.statusLabel})\n${siteUrl}/dashboard/`);
+  await writeState({
+    status: 'success',
+    generatedAt: snapshot.generatedAt,
+    score: snapshot.score,
+    maxScore: snapshot.metrics.length,
+    statusLabel: snapshot.statusLabel,
+    url: `${siteUrl}/dashboard/`,
+    reported: false
+  });
 } catch (error) {
+  await writeState({ status: 'failed', error: error.message, reported: true }).catch(() => {});
   await notify(`Caelus 대시보드 발행 실패\n${error.message}`).catch(() => {});
   console.error(error.message);
   process.exitCode = 1;
