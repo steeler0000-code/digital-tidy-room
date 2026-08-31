@@ -17,6 +17,7 @@ OPENCLAW = Path("/Users/ashton/.openclaw")
 CONFIG = OPENCLAW / "openclaw.json"
 APPROVALS = OPENCLAW / "exec-approvals.json"
 WORKSPACE = OPENCLAW / "workspace" / "caelus_site_engineer"
+AGENT_DIR = OPENCLAW / "agents" / "caelus_site_engineer" / "agent"
 TEMPLATE = SOURCE / "openclaw" / "caelus_site_engineer-template"
 CHECKOUT = WORKSPACE / "repos" / "caelus-site"
 WRAPPER = WORKSPACE / "bin" / "caelus-engineer"
@@ -73,6 +74,7 @@ def backup() -> Path:
 
 def install_workspace() -> None:
     WORKSPACE.mkdir(parents=True, exist_ok=True)
+    AGENT_DIR.mkdir(parents=True, exist_ok=True)
     for source in TEMPLATE.rglob("*"):
         relative = source.relative_to(TEMPLATE)
         target = WORKSPACE / relative
@@ -89,12 +91,10 @@ def install_workspace() -> None:
 
 def update_config() -> None:
     config = json.loads(CONFIG.read_text(encoding="utf-8"))
-    agents = config.setdefault("agents", {}).setdefault("list", [])
-    agents[:] = [agent for agent in agents if agent.get("id") != "caelus_site_engineer"]
-    agents.append({
-        "id": "caelus_site_engineer",
+    agent_config = {
         "name": "Caelus 엔지니어",
         "workspace": str(WORKSPACE),
+        "agentDir": str(AGENT_DIR),
         "model": {
             "primary": "openai/gpt-5.5",
             "fallbacks": ["xai/grok-4.20-beta-latest-reasoning"],
@@ -109,8 +109,17 @@ def update_config() -> None:
             ],
             "exec": {"host": "gateway", "mode": "allowlist"},
         },
-    })
-    main = next(agent for agent in agents if agent.get("id") == "main")
+    }
+    agents_config = config.setdefault("agents", {})
+    if isinstance(agents_config.get("entries"), dict):
+        entries = agents_config["entries"]
+        entries["caelus_site_engineer"] = agent_config
+        main = entries["main"]
+    else:
+        agents = agents_config.setdefault("list", [])
+        agents[:] = [agent for agent in agents if agent.get("id") != "caelus_site_engineer"]
+        agents.append({"id": "caelus_site_engineer", **agent_config})
+        main = next(agent for agent in agents if agent.get("id") == "main")
     allowed = main.setdefault("subagents", {}).setdefault("allowAgents", [])
     if "caelus_site_engineer" not in allowed:
         allowed.append("caelus_site_engineer")
