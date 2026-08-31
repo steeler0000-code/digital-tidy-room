@@ -1,33 +1,14 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import ArticleCard from '@/components/ArticleCard.astro';
+import MarketDashboard from '@/components/MarketDashboard.astro';
 import { getPublishedBriefings, getPublishedGuides } from '@/lib/content';
 import { getGuideCategory } from '@/data/categories';
 const briefings=await getPublishedBriefings();const guides=await getPublishedGuides();
 ---
 
 <BaseLayout>
-  <section class="hero market-hero">
-    <div class="container hero__grid">
-      <div>
-        <p class="eyebrow">Market context, not market noise</p>
-        <h1>시장의 숫자를,<br /><span>판단의 언어로.</span></h1>
-        <p class="hero__lead">Caelus는 국내·미국 시장의 핵심 이슈를 추려 왜 움직였는지, 어떤 지표를 다음에 확인해야 하는지 설명합니다.</p>
-        <div class="hero__actions">
-          <a class="button" href="/briefings/">마켓 브리핑 보기</a>
-          <a class="button button--secondary" href="/tools/">투자 도구 사용하기</a>
-        </div>
-      </div>
-      <aside class="hero__note market-note" aria-label="Caelus의 해석 순서">
-        <span class="note-label">CAELUS FRAMEWORK</span>
-        <ol>
-          <li><span>1</span><div><strong>사실</strong><br />시점과 출처를 확인합니다.</div></li>
-          <li><span>2</span><div><strong>전달 경로</strong><br />금리·환율·실적의 연결을 봅니다.</div></li>
-          <li><span>3</span><div><strong>확인 지표</strong><br />전망을 검증할 다음 숫자를 남깁니다.</div></li>
-        </ol>
-      </aside>
-    </div>
-  </section>
+  <section class="dashboard-hero"><div class="container"><MarketDashboard /><div class="dashboard-detail-link"><a class="text-link" href="/dashboard/">지표별 산정 기준과 출처 보기</a></div></div></section>
 
   <section class="section--compact">
     <div class="container">

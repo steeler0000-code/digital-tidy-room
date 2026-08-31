@@ -13,7 +13,9 @@
     "deploy": "npm run build && wrangler deploy",
     "validate:content": "node scripts/validate-content.mjs",
     "validate:links": "node scripts/validate-links.mjs",
-    "test": "node --test scripts/calculators.test.mjs scripts/import-caelus-package.test.mjs scripts/import-caelus-guide.test.mjs"
+    "dashboard:refresh": "node scripts/refresh-dashboard-data.mjs",
+    "dashboard:publish": "node scripts/publish-dashboard.mjs",
+    "test": "node --test scripts/calculators.test.mjs scripts/dashboard-data.test.mjs scripts/import-caelus-package.test.mjs scripts/import-caelus-guide.test.mjs"
   },
   "engines": {
     "node": ">=22.12.0"

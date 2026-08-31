@@ -17,6 +17,7 @@ export const siteConfig = {
   },
   navigation: [
     { label: '홈', href: '/' },
+    { label: '시장 대시보드', href: '/dashboard/' },
     { label: '마켓 브리핑', href: '/briefings/' },
     { label: '투자 방법론', href: '/guides/' },
     { label: '투자 도구', href: '/tools/' },

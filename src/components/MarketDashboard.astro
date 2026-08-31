@@ -1,0 +1,61 @@
+---
+import { dashboard, sparklinePoints, formatDashboardDate } from '@/lib/dashboard';
+
+type Props = { detailed?: boolean };
+const { detailed = false } = Astro.props;
+const updatedAt = new Intl.DateTimeFormat('ko-KR', {
+  timeZone: 'Asia/Seoul', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+}).format(new Date(dashboard.generatedAt));
+const gaugePosition = Math.max(6, Math.min(94, ((dashboard.score + 8) / 16) * 100));
+---
+
+<section class:list={['market-dashboard', detailed && 'market-dashboard--detailed']} aria-labelledby="market-dashboard-title" data-dashboard-generated-at={dashboard.generatedAt}>
+  <div class="dashboard-heading">
+    <div>
+      <p class="eyebrow">Market dashboard</p>
+      <h1 id="market-dashboard-title">{detailed ? '시장 환경 대시보드' : '오늘의 시장 환경을 한눈에'}</h1>
+      <p>금리·환율·물가·유동성 8개 지표를 한국 투자자의 시선으로 보여줍니다.</p>
+    </div>
+    <div class="dashboard-freshness"><span aria-hidden="true"></span>{updatedAt} KST 갱신</div>
+  </div>
+
+  <div class="dashboard-grid">
+    <article class="regime-card">
+      <div class="regime-card__head"><span>시장 환경 점검</span><strong class={`status status--${dashboard.status}`}>{dashboard.statusLabel}</strong></div>
+      <div class="regime-score"><strong>{dashboard.score > 0 ? '+' : ''}{dashboard.score}</strong><span>/ 8</span></div>
+      <div class="regime-gauge" aria-label={`시장 환경 점수 ${dashboard.score}점, ${dashboard.statusLabel}`}>
+        <span class="regime-gauge__marker" style={`left:${gaugePosition}%`}></span>
+      </div>
+      <div class="regime-labels" aria-hidden="true"><span>경계</span><span>혼조</span><span>우호</span></div>
+      <p>{dashboard.summary}</p>
+      <dl class="contribution-list">
+        {dashboard.contributions.map((item) => <div><dt>{item.label}</dt><dd class:list={[item.score > 0 && 'is-positive', item.score < 0 && 'is-negative']}>{item.score > 0 ? '+' : ''}{item.score}</dd></div>)}
+      </dl>
+    </article>
+
+    <div class="metric-grid">
+      {dashboard.metrics.map((metric) => (
+        <article class={`metric-card metric-card--${metric.direction}`}>
+          <div class="metric-card__top"><span class={`region region--${metric.region.toLowerCase()}`}>{metric.region}</span><span>{metric.frequency}</span></div>
+          <h2>{metric.label}</h2>
+          <div class="metric-card__value-row">
+            <strong>{metric.displayValue}</strong>
+            <svg viewBox="0 0 112 34" role="img" aria-label={`${metric.label} 최근 흐름`}><polyline points={sparklinePoints(metric.history)} /></svg>
+          </div>
+          <p class="metric-card__change">{metric.changeLabel}</p>
+          {detailed && <p class="metric-card__description">{metric.description}</p>}
+          <div class="metric-card__source"><time datetime={metric.asOf}>{formatDashboardDate(metric.asOf)} 기준</time><a href={metric.source.url} rel="noopener noreferrer">{metric.source.name}</a></div>
+        </article>
+      ))}
+    </div>
+  </div>
+
+  {!detailed && (
+    <div class="dashboard-takeaways">
+      <div><span>01</span><p><strong>금리</strong>한국 기준금리 인상으로 조달 비용 부담이 커졌습니다.</p></div>
+      <div><span>02</span><p><strong>환율</strong>원·달러 환율은 8월 중 고점에서 낮아졌습니다.</p></div>
+      <div><span>03</span><p><strong>유동성</strong>미국 M2 증가율이 3개월 전보다 높아졌습니다.</p></div>
+      <a class="button" href="/briefings/">오늘의 마켓 브리핑 읽기</a>
+    </div>
+  )}
+</section>

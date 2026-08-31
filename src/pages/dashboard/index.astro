@@ -1,0 +1,24 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import MarketDashboard from '@/components/MarketDashboard.astro';
+import { dashboard } from '@/lib/dashboard';
+---
+
+<BaseLayout title="시장 환경 대시보드" description="한국·미국의 금리, 환율, 물가, M2와 연준 자산을 공식 출처로 확인하는 Caelus 투자 대시보드입니다." canonicalPath="/dashboard/">
+  <div class="dashboard-page">
+    <div class="container"><Breadcrumbs items={[{ label: '홈', href: '/' }, { label: '시장 대시보드' }]} /></div>
+    <div class="container"><MarketDashboard detailed /></div>
+  </div>
+
+  <section class="section--compact"><div class="container dashboard-method">
+    <div><p class="eyebrow">How to read</p><h2>점수는 매매 신호가 아닙니다</h2><p>8개 지표의 방향을 -1·0·+1로 단순화해 시장 환경을 점검합니다. +3 이상은 우호, -3 이하는 경계, 나머지는 혼조로 표시합니다. 자산 가격을 예측하거나 특정 종목을 권유하지 않습니다.</p></div>
+    <div class="method-card"><h3>판정 기준</h3><ul><li>금리·환율: 최근 3개월 또는 60거래일 변화</li><li>물가·M2: 전년 동월비의 3개월 변화</li><li>연준 총자산: 13주 변화율</li><li>각 지표는 고유 공표 주기와 기준일을 함께 표시</li></ul></div>
+  </div></section>
+
+  <section class="section--compact"><div class="container">
+    <div class="section-heading"><div><p class="eyebrow">Sources & freshness</p><h2>출처와 갱신 원칙</h2><p>스냅샷은 가장 늦게 공표되는 월간 지표에 맞춰 일자가 서로 다를 수 있습니다.</p></div></div>
+    <div class="source-table-wrap"><table class="source-table"><thead><tr><th>지표</th><th>공식 출처</th><th>시리즈</th><th>최신 기준일</th></tr></thead><tbody>{dashboard.metrics.map(metric => <tr><th>{metric.label}</th><td><a href={metric.source.url} rel="noopener noreferrer">{metric.source.name}</a></td><td>{metric.source.series}</td><td>{metric.asOf} · {metric.frequency}</td></tr>)}</tbody></table></div>
+    <div class="dashboard-caveat"><strong>갱신 상태 안내</strong><p>일간 자료는 3영업일, 주간 자료는 10일, 월간 자료는 60일을 넘기면 점검 대상입니다. 갱신에 실패하면 검증된 직전 스냅샷을 유지하고 운영자에게 알립니다.</p></div>
+  </div></section>
+</BaseLayout>
