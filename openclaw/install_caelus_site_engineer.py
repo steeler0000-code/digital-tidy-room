@@ -65,6 +65,18 @@ def backup() -> Path:
     shutil.copy2(CONFIG, destination / "openclaw.json")
     if APPROVALS.exists():
         shutil.copy2(APPROVALS, destination / "exec-approvals.json")
+    else:
+        try:
+            current = subprocess.run(
+                ["openclaw", "approvals", "get", "--gateway", "--json"],
+                check=True, text=True, capture_output=True,
+            )
+            exported = json.loads(current.stdout)["file"]
+            (destination / "exec-approvals.sqlite.json").write_text(
+                json.dumps(exported, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+            )
+        except Exception:
+            pass
     if KHAN_AGENTS.exists():
         shutil.copy2(KHAN_AGENTS, destination / "khan-AGENTS.md")
     if MURDOCH_AGENTS.exists():
@@ -107,10 +119,11 @@ def update_config() -> None:
             "deny": [
                 "process", "browser", "message", "cron", "gateway", "sessions_spawn", "sessions_send",
             ],
-            "exec": {"host": "gateway", "mode": "allowlist"},
+            "exec": {"host": "gateway", "mode": "auto"},
         },
     }
     agents_config = config.setdefault("agents", {})
+    agents_config.setdefault("defaults", {}).setdefault("systemAgent", {})["agentId"] = "main"
     if isinstance(agents_config.get("entries"), dict):
         entries = agents_config["entries"]
         entries["caelus_site_engineer"] = agent_config
@@ -129,16 +142,36 @@ def update_config() -> None:
 
 
 def update_approvals() -> None:
-    approvals = json.loads(APPROVALS.read_text(encoding="utf-8")) if APPROVALS.exists() else {"version": 1, "agents": {}}
+    sqlite_backed = not APPROVALS.exists()
+    if sqlite_backed:
+        current = subprocess.run(
+            ["openclaw", "approvals", "get", "--gateway", "--json"],
+            check=True, text=True, capture_output=True,
+        )
+        approvals = json.loads(current.stdout)["file"]
+    else:
+        approvals = json.loads(APPROVALS.read_text(encoding="utf-8"))
     agent = approvals.setdefault("agents", {}).setdefault("caelus_site_engineer", {})
+    agent["security"] = "allowlist"
+    agent["ask"] = "off"
+    agent["askFallback"] = "deny"
     allowlist = agent.setdefault("allowlist", [])
     pattern = str(WRAPPER)
     if not any(entry.get("pattern") == pattern for entry in allowlist):
         allowlist.append({"pattern": pattern})
-    temporary = APPROVALS.with_suffix(".json.tmp")
+    temporary = WORKSPACE / ".exec-approvals-update.json" if sqlite_backed else APPROVALS.with_suffix(".json.tmp")
     temporary.write_text(json.dumps(approvals, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     os.chmod(temporary, 0o600)
-    temporary.replace(APPROVALS)
+    if sqlite_backed:
+        try:
+            subprocess.run(
+                ["openclaw", "approvals", "set", "--file", str(temporary), "--gateway", "--json"],
+                check=True, text=True, capture_output=True,
+            )
+        finally:
+            temporary.unlink(missing_ok=True)
+    else:
+        temporary.replace(APPROVALS)
 
 
 def main() -> int:
@@ -157,6 +190,11 @@ def main() -> int:
         shutil.copy2(saved / "openclaw.json", CONFIG)
         if (saved / "exec-approvals.json").exists():
             shutil.copy2(saved / "exec-approvals.json", APPROVALS)
+        elif (saved / "exec-approvals.sqlite.json").exists():
+            subprocess.run([
+                "openclaw", "approvals", "set", "--file",
+                str(saved / "exec-approvals.sqlite.json"), "--gateway", "--json",
+            ], check=False, text=True, capture_output=True)
         if (saved / "khan-AGENTS.md").exists():
             shutil.copy2(saved / "khan-AGENTS.md", KHAN_AGENTS)
         if (saved / "murdoch-AGENTS.md").exists():

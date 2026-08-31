@@ -114,6 +114,10 @@ openclaw cron list --all --agent contents_chief_director
 - `doctor --fix`, 설정 전체 교체, 동일 cron 복제는 하지 않는다.
 - 승인 메시지 전송 실패를 승인으로 간주하지 않는다.
 
+다중 에이전트 마이그레이션 뒤 `AgentSelectionRequiredError`와 함께 Gateway가 준비 상태를 거부하면 `agents.ownership: "explicit"`만 확인하고 끝내지 않는다. 기존 Codex 스레드 같은 소유자 없는 시스템 작업의 기준이 되도록 `agents.defaults.systemAgent.agentId`가 Khan(`main`)으로 명시됐는지 확인한다. 이 한 항목을 먼저 수정하고 재시작하며, 곧바로 광범위한 `doctor --fix`를 실행하지 않는다.
+
+Codex 기반 에이전트에서 `effective tools.exec.mode=allowlist` 때문에 기본 모델이 fallback으로 우회되면 에이전트 설정은 `mode=auto`로 두고 실행 호스트 승인 정책을 `security=allowlist`, `ask=off`, `askFallback=deny`로 제한한다. 이렇게 해야 Codex 런타임은 시작되면서도 등록된 결정론적 래퍼 외 실행은 거부된다. 구형 `exec-approvals.json`이 SQLite로 이전된 뒤에는 이 파일을 다시 만들지 말고 `openclaw approvals get/set --gateway`로 같은 저장소를 갱신한다.
+
 ## 실제 발생 사례와 영구 조치
 
 ### 날짜 제목이 `2026년 2026월 8일`로 생성됨
