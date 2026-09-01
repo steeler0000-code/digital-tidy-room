@@ -49,6 +49,15 @@ function shiftMonth(value, offset) {
   return `${shifted.getUTCFullYear()}-${String(shifted.getUTCMonth() + 1).padStart(2, '0')}-01`;
 }
 
+function monthlyWindows(start, end, monthsPerWindow = 9) {
+  const windows = [];
+  for (let cursor = start; cursor <= end; cursor = shiftMonth(cursor, monthsPerWindow)) {
+    const candidateEnd = shiftMonth(cursor, monthsPerWindow - 1);
+    windows.push([cursor, candidateEnd < end ? candidateEnd : end]);
+  }
+  return windows;
+}
+
 async function ecosDailyHistory(stat, item, days = 98) {
   const rows = [];
   for (let offset = -days; offset <= 0; offset += 7) {
@@ -63,7 +72,16 @@ const round = (value, digits = 2) => Number(value.toFixed(digits));
 const pct = (value, base) => ((value / base) - 1) * 100;
 const latest = (rows) => rows.at(-1);
 const findDate = (rows, date) => rows.find((row) => row.date === date);
-const metric = (id) => current.metrics.find((item) => item.id === id);
+function requireDate(rows, date, label) {
+  const row = findDate(rows, date);
+  if (!row || !Number.isFinite(row.value)) throw new Error(`${label}: 기준월 ${date} 데이터 누락`);
+  return row;
+}
+function metric(id) {
+  const found = current.metrics.find((item) => item.id === id);
+  if (!found) throw new Error(`dashboard.json: 지표 ${id} 누락`);
+  return found;
+}
 const set = (id, values) => Object.assign(metric(id), values);
 
 function kstTimestamp() {
@@ -76,16 +94,16 @@ function kstTimestamp() {
 
 async function refresh() {
   const monthNow = `${dateInKst().slice(0, 7)}-01`;
-  const monthStart = shiftMonth(monthNow, -16);
-  const monthSplit = shiftMonth(monthStart, 8);
-  const monthSplitNext = shiftMonth(monthStart, 9);
+  // 최신 CPI가 1~2개월 늦게 공표되어도 "3개월 전의 전년동월"을
+  // 계산할 수 있도록 20개월을 확보한다. ECOS sample 키의 10행 제한을
+  // 넘지 않도록 9개월 단위로 나눠 조회한다.
+  const monthStart = shiftMonth(monthNow, -20);
   const [dgs10, dgs2, m2sl, krRate, krCpi] = await Promise.all([
     fred('DGS10'), fred('DGS2'), fred('M2SL'),
     ecosDailyHistory('722Y001', '0101000'),
-    Promise.all([
-      ecos('901Y009', 'M', compactMonth(monthStart), compactMonth(monthSplit), '0'),
-      ecos('901Y009', 'M', compactMonth(monthSplitNext), compactMonth(monthNow), '0')
-    ]).then((parts) => parts.flat())
+    Promise.all(monthlyWindows(monthStart, monthNow).map(([start, end]) =>
+      ecos('901Y009', 'M', compactMonth(start), compactMonth(end), '0')
+    )).then((parts) => parts.flat())
   ]);
 
   const rateNow = latest(krRate);
@@ -103,10 +121,14 @@ async function refresh() {
   });
 
   const cpiNowIndex = latest(krCpi);
-  const cpiPrior = findDate(krCpi, shiftMonth(cpiNowIndex.date, -12));
+  if (!cpiNowIndex) throw new Error('한국 CPI: 최신 데이터 없음');
+  const cpiPrior = requireDate(krCpi, shiftMonth(cpiNowIndex.date, -12), '한국 CPI 전년 비교');
   const cpiYoy = pct(cpiNowIndex.value, cpiPrior.value);
   const cpiReferenceDate = shiftMonth(cpiNowIndex.date, -3);
-  const cpiReference = pct(findDate(krCpi, cpiReferenceDate).value, findDate(krCpi, shiftMonth(cpiReferenceDate, -12)).value);
+  const cpiReference = pct(
+    requireDate(krCpi, cpiReferenceDate, '한국 CPI 3개월 비교').value,
+    requireDate(krCpi, shiftMonth(cpiReferenceDate, -12), '한국 CPI 3개월 전년 비교').value
+  );
   const cpiDelta = cpiYoy - cpiReference;
   set('kr-cpi', {
     value: round(cpiYoy), displayValue: `${cpiYoy.toFixed(1)}%`, asOf: cpiNowIndex.date,
@@ -133,8 +155,12 @@ async function refresh() {
     history: dgs10.slice(-10).map((row, index) => round(row.value - dgs2.slice(-10)[index].value))
   });
 
-  const m2Now = latest(m2sl); const m2Prior = findDate(m2sl, shiftMonth(m2Now.date, -12));
-  const m2ThreeMonths = m2sl.at(-4); const m2ThreePrior = findDate(m2sl, shiftMonth(m2ThreeMonths.date, -12));
+  const m2Now = latest(m2sl);
+  if (!m2Now) throw new Error('미국 M2: 최신 데이터 없음');
+  const m2Prior = requireDate(m2sl, shiftMonth(m2Now.date, -12), '미국 M2 전년 비교');
+  const m2ThreeMonths = m2sl.at(-4);
+  if (!m2ThreeMonths) throw new Error('미국 M2: 3개월 비교 데이터 부족');
+  const m2ThreePrior = requireDate(m2sl, shiftMonth(m2ThreeMonths.date, -12), '미국 M2 3개월 전년 비교');
   const m2Yoy = pct(m2Now.value, m2Prior.value); const m2YoyRef = pct(m2ThreeMonths.value, m2ThreePrior.value); const m2Delta = m2Yoy - m2YoyRef;
   set('us-m2', {
     value: round(m2Yoy), displayValue: `${m2Yoy.toFixed(1)}%`, asOf: m2Now.date,

@@ -36,3 +36,9 @@ test('전년 비교는 실행 연도에 종속되지 않는다', () => {
   assert.doesNotMatch(updater, /replace\(['"]2026['"]/);
   assert.match(updater, /shiftMonth\([^\n]+, -12\)/);
 });
+
+test('CPI 지연 공표와 ECOS sample 제한을 안전하게 처리한다', () => {
+  assert.match(updater, /shiftMonth\(monthNow, -20\)/);
+  assert.match(updater, /monthlyWindows\(monthStart, monthNow\)/);
+  assert.match(updater, /기준월 \$\{date\} 데이터 누락/);
+});
