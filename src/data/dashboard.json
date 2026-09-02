@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-09-02T06:26:00+09:00",
-  "score": -1,
+  "generatedAt": "2026-09-03T06:00:03+09:00",
+  "score": 0,
   "status": "mixed",
   "statusLabel": "혼조",
   "summary": "금리·물가·유동성 지표가 한 방향을 가리키지 않습니다. 단일 지표를 매매 신호로 삼기보다 다음 공표에서 방향이 확인되는지 점검할 구간입니다.",
   "contributions": [
     {
       "label": "금리",
-      "score": -2
+      "score": -1
     },
     {
       "label": "물가",
@@ -28,7 +28,7 @@
       "changeLabel": "3개월 전 대비 +0.50%p",
       "direction": "negative",
       "contribution": -1,
-      "asOf": "2026-08-30",
+      "asOf": "2026-09-02",
       "frequency": "일간",
       "description": "기준금리 상승은 조달비용과 평가가치에 부담을 줄 수 있습니다.",
       "history": [
@@ -95,16 +95,15 @@
       "id": "us-10y",
       "region": "US",
       "label": "미국 10년물 금리",
-      "value": 4.75,
-      "displayValue": "4.75%",
-      "changeLabel": "60거래일 전 대비 +0.28%p",
+      "value": 4.79,
+      "displayValue": "4.79%",
+      "changeLabel": "60거래일 전 대비 +0.24%p",
       "direction": "negative",
-      "contribution": -1,
-      "asOf": "2026-08-31",
+      "contribution": 0,
+      "asOf": "2026-09-01",
       "frequency": "일간",
       "description": "성장주 평가가치와 글로벌 자산의 할인율을 나타내는 핵심 금리입니다.",
       "history": [
-        4.71,
         4.65,
         4.69,
         4.74,
@@ -113,7 +112,8 @@
         4.66,
         4.67,
         4.73,
-        4.75
+        4.75,
+        4.79
       ],
       "source": {
         "name": "FRED",
@@ -125,16 +125,15 @@
       "id": "us-yield-spread",
       "region": "US",
       "label": "10년-2년 금리차",
-      "value": 0.41,
-      "displayValue": "+0.41%p",
-      "changeLabel": "60거래일 전 대비 -0.01%p",
-      "direction": "negative",
+      "value": 0.4,
+      "displayValue": "+0.40%p",
+      "changeLabel": "60거래일 전 대비 +0.02%p",
+      "direction": "positive",
       "contribution": 0,
-      "asOf": "2026-08-31",
+      "asOf": "2026-09-01",
       "frequency": "일간",
       "description": "장·단기 금리차로 경기 기대와 금융 환경을 확인합니다.",
       "history": [
-        0.52,
         0.46,
         0.5,
         0.5,
@@ -143,7 +142,8 @@
         0.47,
         0.47,
         0.39,
-        0.41
+        0.41,
+        0.4
       ],
       "source": {
         "name": "FRED",
