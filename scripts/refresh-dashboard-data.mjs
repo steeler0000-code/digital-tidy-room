@@ -70,7 +70,7 @@ async function ecosDailyHistory(stat, item, days = 98) {
 
 const round = (value, digits = 2) => Number(value.toFixed(digits));
 const pct = (value, base) => ((value / base) - 1) * 100;
-const latest = (rows) => rows.at(-1);
+const latest = (rows) => (Array.isArray(rows) && rows.length > 0 ? rows.at(-1) : null);
 const findDate = (rows, date) => rows.find((row) => row.date === date);
 function requireDate(rows, date, label) {
   const row = findDate(rows, date);

@@ -20,11 +20,9 @@ function host(url) {
 function cleanTitle(date, rawTitle) {
   const [, year, month, day] = date.match(/^(\d{4})-(\d{2})-(\d{2})$/) || [];
   if (!year) throw new Error(`잘못된 패키지 날짜: ${date}`);
-  const topic = String(rawTitle || '')
-    .replace(/^\[\d{1,2}\/\d{1,2}\s*이슈\]\s*/, '')
-    .replace(/\s*&\s*/g, ' · ')
-    .trim();
-  return `${year}년 ${Number(month)}월 ${Number(day)}일 Caelus 마켓 브리핑 — ${topic}`;
+  const shortYear = year.slice(2);
+  // 새 표준 양식: ['26년 9월 1일 카일루스 마켓브리핑]
+  return `['${shortYear}년 ${Number(month)}월 ${Number(day)}일 카일루스 마켓브리핑]`;
 }
 
 function cleanMaster(source) {
