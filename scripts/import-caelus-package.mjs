@@ -62,7 +62,10 @@ export async function buildBriefingPackage(packageDir, { publish = false } = {})
     readFile(path.join(packageDir, 'master.md'), 'utf8')
   ]);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(run.date || '')) throw new Error('run.json 날짜가 없습니다.');
-  if (!Array.isArray(manifest.slides) || manifest.slides.length !== 8) throw new Error('카드는 정확히 8장이어야 합니다.');
+  const cardsEnabled = run.cardsEnabled !== false;
+  if (!Array.isArray(manifest.slides) || (cardsEnabled ? manifest.slides.length !== 8 : manifest.slides.length !== 0)) {
+    throw new Error(cardsEnabled ? '카드는 정확히 8장이어야 합니다.' : '카드 비활성 패키지에는 슬라이드가 없어야 합니다.');
+  }
 
   const usedIds = new Set(manifest.used_claim_ids || article.usedClaimIds || []);
   const verified = (claimsDoc.claims || []).filter((claim) => claim.status === 'verified' && usedIds.has(claim.id));
@@ -79,7 +82,12 @@ export async function buildBriefingPackage(packageDir, { publish = false } = {})
   }));
   const selectedIds = new Set(brief.selected?.issues || []);
   const candidates = (brief.candidates || []).filter((item) => selectedIds.has(item.id));
-  const rows = manifest.summary_rows || [];
+  const issueRows = (article.article?.issues || []).map((issue) => ({
+    issue: String(issue.title || '').replace(/^\s*이슈\s*\d+\s*[\u00b7.:]?\s*/, '').trim(),
+    impact: String(issue.impact_outlook?.[0]?.text || issue.impact_outlook?.[0] || '시장 영향을 본문에서 확인합니다.').trim(),
+    watch: String(issue.investor_checklist?.[0]?.text || issue.investor_checklist?.[0] || '후속 공시와 지표를 확인합니다.').trim()
+  }));
+  const rows = (manifest.summary_rows?.length ? manifest.summary_rows : issueRows).slice(0, 3);
   const title = cleanTitle(run.date, article.title);
   const externalChannels = Object.entries(run.channels || {})
     .filter(([name, value]) => name !== 'site' && value?.state === 'published' && value?.url)
@@ -95,7 +103,7 @@ export async function buildBriefingPackage(packageDir, { publish = false } = {})
     editorialApproved: publish,
     draft: !publish,
     featured: false,
-    contentTier: 'flagship',
+    contentTier: cardsEnabled ? 'flagship' : 'standard',
     summary: rows.map((row) => `${row.issue}: ${row.impact}`).join(' '),
     highlights: rows.map((row) => `${row.issue} — ${row.watch}`),
     related: [],
@@ -125,10 +133,12 @@ export async function writeBriefingPackage(packageDir, siteRoot, options = {}) {
     }
   }
   await mkdir(path.dirname(contentFile), { recursive: true });
-  await mkdir(assetDir, { recursive: true });
-  for (let index = 1; index <= 8; index += 1) {
-    const name = `slide-${String(index).padStart(2, '0')}.png`;
-    await copyFile(path.join(packageDir, 'channels/instagram/cards', name), path.join(assetDir, name));
+  if (output.cards.length) {
+    await mkdir(assetDir, { recursive: true });
+    for (let index = 1; index <= output.cards.length; index += 1) {
+      const name = `slide-${String(index).padStart(2, '0')}.png`;
+      await copyFile(path.join(packageDir, 'channels/instagram/cards', name), path.join(assetDir, name));
+    }
   }
   const markdown = `---\n${frontmatterYaml(output.frontmatter)}\n---\n\n${output.body}\n`;
   await writeFile(contentFile, markdown, 'utf8');
