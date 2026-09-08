@@ -1,7 +1,7 @@
 # 콘텐츠 공장 총괄 에이전트 활성 운영 사양
 
 - 기록일: 2026-08-23 KST
-- 상태: 활성 (Caelus 승인형 발행 운영 시작)
+- 상태: 활성 (Caelus 운영 + 트렌드 HTML 초안 공장 시험 운영)
 - 에이전트 ID: `contents_chief_director`
 - 대화용 이름: `머독`
 
@@ -28,7 +28,7 @@
    - 네이버 블로그, 티스토리, Instagram
    - 정기 발행, 높은 검증 수준, 사람 승인
 2. 실시간 트렌드 콘텐츠 공장
-   - 별도 티스토리 계정
+   - 현재 채널 미등록, Murdoch Telegram HTML 초안 전달만 수행
    - Google Trending Now 대한민국, Brave Search, 네이버 뉴스·데이터랩, 방송사 공식 자료 등을 이용한 화제 감지
    - 방송 맛집·여행지·생활 화제를 우선하고 고위험 속보는 사람 승인
 3. 이후 추가될 콘텐츠 공장
@@ -49,11 +49,11 @@
 - 버튼 접수 즉시 접수 결과를 회신하고, 완료 후 공개 URL 또는 구체적인 실패 이유를 다시 회신한다.
 - Khan에게는 연속 발행 실패, 로그인·계정 문제, 오보 위험, 비용 한도 초과, 정책 변경 필요 같은 중대한 예외만 즉시 보고한다.
 
-## 트렌드 공장 예정 흐름
+## 트렌드 공장 현재 흐름
 
-`신호 수집 → 키워드 군집화·중복 제거 → 급등·신뢰·검색 의도 점수 → 공식 자료 교차 검증 → Telegram 후보 → 초안 → 승인 → 티스토리 발행 → URL 검증 → 성과 학습`
+`10분 신호 수집 → 중복 제거 → 급등·교차출처·신선도·검색 의도·검증성·고유성 점수 → 공식 자료 교차 검증 → HTML 초안 → Murdoch Telegram 파일 전달`
 
-티스토리 공식 Open API 종료에 따라 로그인된 전용 브라우저 프로필의 CDP 발행 어댑터를 사용하고, 신규 글·기존 글 업데이트·중복 방지·발행 URL 검증을 지원한다.
+현재 단계에는 Tistory·Naver Blog·Instagram·브라우저·Git 발행 모듈이 없다. 운영 안정성을 확인한 뒤 별도의 사용자 승인 계획으로 채널 등록 모듈을 추가한다.
 
 ## 확정된 운영 정책
 
@@ -64,22 +64,27 @@
 - 신규 콘텐츠 공장은 머독이 제안하고 사용자가 승인한 뒤 생성한다.
 - 투자 콘텐츠와 중요한 속보는 항상 사람 승인을 받는다.
 - 검증된 저위험 생활정보는 충분한 운영 데이터가 쌓인 뒤 제한적 자동 발행을 검토한다.
-- 22시부터 다음 날 07시까지는 긴급 상황 외 Telegram 알림을 보내지 않는다.
+- 22시부터 다음 날 07시까지는 긴급 상황 외 Telegram 알림을 보내지 않는다. 단, 사용자가 승인한 `[트렌드 공장]`은 24시간 즉시 전달한다.
 
 ## 활성 구성
 
 - Telegram 계정 ID: `murdoch`
 - Telegram bot: `OC_Murdoch_Bot`
 - 연결 에이전트: `contents_chief_director`
-- 기본 모델: `openai/gpt-5.5`
-- fallback 모델: `xai/grok-4.20-beta-latest-reasoning`
-- 호출 허용 전문 에이전트: `market_researcher`, `content_editor`, `content_publisher`
+- 머독 기본 모델: `xai/grok-4.3`
+- 머독 fallback 모델: `xai/grok-4.20-beta-latest-reasoning`
+- 호출 허용 전문 에이전트: `market_researcher`, `content_editor`, `content_publisher`, `trend_researcher`, `trend_editor`
+- 트렌드 조사 모델: `xai/grok-4.20-beta-latest-reasoning`, fallback `openai/gpt-5.5`
+- 트렌드 편집 모델: `openai/gpt-5.5`, fallback `xai/grok-4.20-beta-latest-reasoning`
+- 트렌드 공장 프로젝트: `/Users/ashton/Documents/AGI system 설계/Trend-Content-Factory`
 - 사이트 checkout: 머독 전용 작업공간 아래 `repos/caelus-site`
 - GitHub 인증: `digital-tidy-room` 저장소에만 쓰기 가능한 deploy key
 - Cloudflare Pages 배포: GitHub `main` 연동 배포. Workers Scripts token은 운영 도메인 발행 경로에 사용하지 않음
 - 비밀값 저장: `~/.openclaw/.env`와 `~/.openclaw/credentials/contents_chief_director/`만 사용
 
 ## 활성 일정
+
+- 트렌드 탐지: 10분 간격, declaration key `trend.murdoch.scan` (Naver 키·모델 공급자 정상화 전까지 비활성)
 
 - 브리핑 생성: 평일 06:30 KST
 - 브리핑 미리보기: 평일 07:40 KST
@@ -93,6 +98,13 @@
 모든 예약 작업은 `caelus.murdoch.*` declaration key를 사용한다. 보강 기간의 일회성 가이드 작업과 정규 가이드 작업은 동시에 활성화하지 않으며, 전환 작업이 정규 작업 3개를 declaration key로 찾아 활성화한다.
 
 ## 검증 완료 항목
+
+- 트렌드 공장 fixture 5종: 정상 생활화제, 검증뉴스, 72시간 중복, 출처 충돌, 고위험 차단
+- 외부 자산·JavaScript 없는 반응형 HTML과 XSS 이스케이프
+- `trend_researcher`·`trend_editor` 별도 워크스페이스와 읽기 전용 권한
+- Murdoch Telegram에 `[트렌드 공장 테스트]` HTML 문서 실제 전달
+- 하루 3건 제한, 72시간 중복 방지, 실행 중복 잠금, 전송 최대 3회
+- 생활화제 1,200~2,000자·검증뉴스 1,500~2,500자는 권장 분량으로만 사용하며 미달·초과를 허용
 
 - 머독 bot API 탐침과 전용 Telegram 시험 메시지 전송
 - `contents_chief_director` 전용 라우팅과 사용자 허용 목록
@@ -114,5 +126,7 @@
 
 ## 후속 확장 대기 항목
 
-- 트렌드 콘텐츠용 별도 티스토리 계정과 로그인 프로필
+- Naver OpenAPI Client ID·Secret 보안 입력 후 실데이터 scan 및 일정 활성화
+- xAI/OpenAI 모델 공급자 제한 정상화 후 두 작업자 실호출 검증
+- 트렌드 콘텐츠용 별도 티스토리 계정과 로그인 프로필 및 발행 모듈
 - 충분한 운영 데이터 이후 저위험 생활정보의 제한적 자동 발행 검토

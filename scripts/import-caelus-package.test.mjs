@@ -25,3 +25,24 @@ test('Caelus 패키지를 사이트 우선 브리핑 계약으로 변환한다',
   assert.match(result.body, /^도입 문장입니다\./);
   assert.doesNotMatch(result.body, /\[IMAGE:|CL-01/);
 });
+
+test('카드 비활성 브리핑을 이미지 없이 변환한다', async (context) => {
+  const root = path.join(os.tmpdir(), `caelus-cardless-${process.pid}-${Date.now()}`);
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await mkdir(path.join(root, 'channels/instagram'), { recursive: true });
+  await writeFile(path.join(root, 'run.json'), JSON.stringify({ date: '2026-09-08', cardsEnabled: false, targetChannels: ['site'], channels: { site: { state: 'pending' }, naver: { state: 'skipped' }, tistory: { state: 'skipped' }, instagram: { state: 'skipped' } } }));
+  await writeFile(path.join(root, 'article.json'), JSON.stringify({ title: '[9/8 이슈] 첫 번째 & 두 번째 & 세 번째', usedClaimIds: ['CL-01'], article: { issues: [
+    { title: '이슈 1 첫 번째', impact_outlook: [{ text: '첫 번째 영향' }], investor_checklist: [{ text: '첫 번째 지표' }] },
+    { title: '이슈 2 두 번째', impact_outlook: [{ text: '두 번째 영향' }], investor_checklist: [{ text: '두 번째 지표' }] },
+    { title: '이슈 3 세 번째', impact_outlook: [{ text: '세 번째 영향' }], investor_checklist: [{ text: '세 번째 지표' }] }
+  ] } }));
+  await writeFile(path.join(root, 'brief.json'), JSON.stringify({ coverage_start: '2026-09-07T06:30:00+09:00', coverage_end: '2026-09-08T06:30:00+09:00', selected: { issues: ['C-01'] }, candidates: [{ id: 'C-01', market: '한국' }] }));
+  await writeFile(path.join(root, 'claims.json'), JSON.stringify({ claims: [{ id: 'CL-01', status: 'verified', sources: ['https://example.com/source'] }] }));
+  await writeFile(path.join(root, 'channels/instagram/manifest.json'), JSON.stringify({ slides: [], used_claim_ids: ['CL-01'], summary_rows: [] }));
+  await writeFile(path.join(root, 'master.md'), '도입 문장입니다. (CL-01)\n\n## 첫 번째\n\n시장 영향을 정리합니다.\n');
+  const result = await buildBriefingPackage(root, { publish: true });
+  assert.equal(result.frontmatter.cards.length, 0);
+  assert.equal(result.frontmatter.contentTier, 'standard');
+  assert.deepEqual(result.frontmatter.externalChannels, []);
+  assert.equal(result.frontmatter.highlights.length, 3);
+});

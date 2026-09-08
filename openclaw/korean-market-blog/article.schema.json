@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Murdoch Korean Market Blog Article",
+  "type": "object",
+  "required": [
+    "schema_version", "article_id", "content_type", "publication_date",
+    "session_date", "as_of", "market_open", "title", "subtitle", "executive_summary",
+    "stocks", "synthesis", "tags", "sources", "disclaimer"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "article_id": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}-(foreign-flow|intraday-gainers|weekend-research)$"},
+    "content_type": {"enum": ["foreign_flow", "intraday_gainers", "weekend_research"]},
+    "publication_date": {"type": "string", "format": "date"},
+    "session_date": {"type": "string", "format": "date"},
+    "as_of": {"type": "string"},
+    "market_open": {"type": "boolean"},
+    "title": {"type": "string", "minLength": 10},
+    "subtitle": {"type": "string", "minLength": 10},
+    "executive_summary": {"type": "string", "minLength": 80},
+    "stocks": {
+      "type": "array", "minItems": 1, "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["rank", "name", "ticker", "market", "security_type", "primary_metric", "reason", "evidence", "outlook", "risks", "source_urls"],
+        "properties": {
+          "rank": {"type": "integer", "minimum": 1, "maximum": 5},
+          "name": {"type": "string", "minLength": 2},
+          "ticker": {"type": "string", "pattern": "^[0-9]{6}$"},
+          "market": {"const": "KOSPI"},
+          "security_type": {"const": "common_stock"},
+          "primary_metric": {"type": "string", "minLength": 2},
+          "current_price": {"type": ["number", "null"]},
+          "previous_close": {"type": ["number", "null"]},
+          "price_change_amount": {"type": ["number", "null"]},
+          "company_profile": {"type": "string"},
+          "reason": {"type": "string", "minLength": 60},
+          "evidence": {"type": "string", "minLength": 40},
+          "outlook": {"type": "string", "minLength": 80},
+          "value_view": {"type": "string"},
+          "risks": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+          "source_urls": {"type": "array", "minItems": 1, "items": {"type": "string", "format": "uri"}}
+        }
+      }
+    },
+    "synthesis": {
+      "type": "object",
+      "required": ["classification", "analysis", "watch_items"],
+      "properties": {
+        "classification": {"type": "string"},
+        "analysis": {"type": "string", "minLength": 100},
+        "watch_items": {"type": "array", "minItems": 2, "items": {"type": "string"}}
+      }
+    },
+    "tags": {"type": "array", "minItems": 3, "maxItems": 10, "items": {"type": "string"}},
+    "sources": {
+      "type": "array", "minItems": 1,
+      "items": {"type": "object", "required": ["title", "url", "accessed"], "properties": {"title": {"type": "string"}, "url": {"type": "string", "format": "uri"}, "accessed": {"type": "string"}}}
+    },
+    "disclaimer": {"type": "string", "minLength": 20}
+    ,
+    "topic": {
+      "type": "object",
+      "properties": {
+        "id": {"type": "string", "pattern": "^[0-9]{2}$"},
+        "title": {"type": "string"},
+        "previous_publication_date": {"type": "string"},
+        "exclude_next": {"type": "string"}
+      }
+    }
+  }
+}

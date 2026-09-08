@@ -24,8 +24,12 @@ function validatePublication(data: { draft: boolean; publishedAt?: Date }, conte
   if (!data.draft && !data.publishedAt) context.addIssue({ code: 'custom', path: ['publishedAt'], message: '공개 문서에는 publishedAt이 필요합니다.' });
 }
 function validateCards(data: { contentTier: 'standard' | 'flagship'; cards: unknown[] }, context: RefinementCtx) {
-  if (data.contentTier === 'flagship' && data.cards.length !== 8) context.addIssue({ code: 'custom', path: ['cards'], message: 'flagship 콘텐츠는 카드 8장이 필요합니다.' });
-  if (data.contentTier === 'standard' && ![0, 8].includes(data.cards.length)) context.addIssue({ code: 'custom', path: ['cards'], message: '카드는 0장 또는 8장이어야 합니다.' });
+  if (data.contentTier === 'flagship' && data.cards.length !== 8) {
+    context.addIssue({ code: 'custom', path: ['cards'], message: 'flagship 콘텐츠는 카드 8장이 필요합니다.' });
+  }
+  if (data.contentTier === 'standard' && ![0, 8].includes(data.cards.length)) {
+    context.addIssue({ code: 'custom', path: ['cards'], message: '카드는 0장 또는 8장이어야 합니다.' });
+  }
 }
 function validateShared(data: { draft: boolean; publishedAt?: Date; contentTier: 'standard' | 'flagship'; cards: unknown[] }, context: RefinementCtx) {
   validatePublication(data, context);

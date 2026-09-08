@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 
 
@@ -31,6 +32,13 @@ def run(*args: str) -> subprocess.CompletedProcess[str]:
 
 
 def main() -> int:
+    if os.environ.get("CAELUS_ENABLE_CARD_PUBLISHING", "0").strip().lower() not in {"1", "true", "yes"}:
+        print(json.dumps({
+            "ok": True,
+            "status": "kept_disabled",
+            "reason": "Instagram 발행과 신규 카드 생성이 비활성이므로 정규 가이드 일정을 활성화하지 않습니다.",
+        }, ensure_ascii=False))
+        return 0
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
