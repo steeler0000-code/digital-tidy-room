@@ -79,7 +79,10 @@ try {
   run('git', ['commit', '-m', `Update market dashboard ${snapshot.generatedAt.slice(0, 10)}`]);
   run('git', ['fetch', 'origin', 'main']);
   run('git', ['rebase', 'origin/main']);
-  run('git', ['push', 'origin', 'main']);
+  // A recovery worktree is intentionally detached so it cannot advance the
+  // source worktree containing someone else's uncommitted edits.  Push the
+  // verified current commit, not that worktree's stale local `main` ref.
+  run('git', ['push', 'origin', 'HEAD:main']);
   await verifyPublic(snapshot.generatedAt);
   await writeState({
     status: 'success',
