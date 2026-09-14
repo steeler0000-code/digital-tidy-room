@@ -12,7 +12,23 @@ const statePath = process.env.DASHBOARD_STATE_PATH || path.join(root, '.state', 
 function run(command, args, capture = false) {
   const result = spawnSync(command, args, { cwd: root, encoding: 'utf8', stdio: capture ? 'pipe' : 'inherit' });
   if (result.status !== 0) throw new Error(`${command} ${args.join(' ')} 실패${result.stderr ? `: ${result.stderr.trim().slice(-500)}` : ''}`);
-  return result.stdout?.trim() || '';
+  // Keep porcelain's leading status column intact; trimming would turn a
+  // worktree modification (` M path`) into a malformed path (`rth`).
+  return result.stdout || '';
+}
+
+function trackedChangeDetails(porcelain) {
+  return porcelain.split('\n').filter(Boolean).map((line) => ({
+    status: line.slice(0, 2),
+    path: line.slice(3).trim(),
+  }));
+}
+
+class DirtyWorktreeBlockedError extends Error {
+  constructor(changes) {
+    super('추적 파일에 미커밋 변경이 있어 자동 갱신을 중단했습니다.');
+    this.changes = changes;
+  }
 }
 
 async function notify(text) {
@@ -53,7 +69,7 @@ async function verifyPublic(generatedAt) {
 
 try {
   const trackedChanges = run('git', ['status', '--porcelain', '--untracked-files=no'], true);
-  if (trackedChanges) throw new Error('추적 파일에 미커밋 변경이 있어 자동 갱신을 중단했습니다.');
+  if (trackedChanges) throw new DirtyWorktreeBlockedError(trackedChangeDetails(trackedChanges));
   run('git', ['fetch', 'origin', 'main']);
   run('git', ['rebase', 'origin/main']);
   run('npm', ['run', 'dashboard:refresh']);
@@ -75,8 +91,22 @@ try {
     reported: false
   });
 } catch (error) {
-  await writeState({ status: 'failed', error: error.message, reported: true }).catch(() => {});
-  await notify(`Caelus 대시보드 발행 실패\n${error.message}`).catch(() => {});
+  const dirtyBlocked = error instanceof DirtyWorktreeBlockedError;
+  const state = dirtyBlocked
+    ? {
+        status: 'blocked_dirty', error: error.message, reported: true,
+        escalation: {
+          target: 'khan', state: 'required', reason: 'tracked_worktree_changes',
+          changes: error.changes,
+          nextAction: 'Preserve changes; Khan must identify authorship and choose a preservation commit or isolated worktree before retrying.',
+        },
+      }
+    : { status: 'failed', error: error.message, reported: true };
+  await writeState(state).catch(() => {});
+  const notice = dirtyBlocked
+    ? `[Khan 조치 요청] Caelus 대시보드 자동 갱신 중지\n${error.message}\n변경 파일: ${error.changes.map((item) => item.path).join(', ')}\n변경을 보존했습니다. reset/checkout/delete/강제 덮어쓰기는 금지이며, Khan 검토 후 보존 커밋 또는 별도 worktree 격리 여부를 결정해야 합니다.`
+    : `Caelus 대시보드 발행 실패\n${error.message}`;
+  await notify(notice).catch(() => {});
   console.error(error.message);
   process.exitCode = 1;
 }

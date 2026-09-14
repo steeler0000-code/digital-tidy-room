@@ -1,9 +1,15 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 
 const dashboard = JSON.parse(await readFile(new URL('../src/data/dashboard.json', import.meta.url), 'utf8'));
 const updater = await readFile(new URL('./refresh-dashboard-data.mjs', import.meta.url), 'utf8');
+const execFileAsync = promisify(execFile);
 
 test('대시보드는 6개 고유 지표와 공식 HTTPS 출처를 가진다', () => {
   assert.equal(dashboard.metrics.length, 6);
@@ -41,4 +47,30 @@ test('CPI 지연 공표와 ECOS sample 제한을 안전하게 처리한다', () 
   assert.match(updater, /shiftMonth\(monthNow, -20\)/);
   assert.match(updater, /monthlyWindows\(monthStart, monthNow\)/);
   assert.match(updater, /기준월 \$\{date\} 데이터 누락/);
+});
+
+test('dirty worktree stops dashboard refresh and records a Khan escalation', async () => {
+  const root = await mkdtemp(path.join(tmpdir(), 'caelus-dashboard-dirty-'));
+  const statePath = path.join(root, 'dashboard-state.json');
+  try {
+    await execFileAsync('git', ['init'], { cwd: root });
+    await execFileAsync('git', ['config', 'user.email', 'test@example.invalid'], { cwd: root });
+    await execFileAsync('git', ['config', 'user.name', 'Dashboard Test'], { cwd: root });
+    await writeFile(path.join(root, 'tracked.md'), 'base\n');
+    await execFileAsync('git', ['add', 'tracked.md'], { cwd: root });
+    await execFileAsync('git', ['commit', '-m', 'base'], { cwd: root });
+    await writeFile(path.join(root, 'tracked.md'), 'user change\n');
+    await assert.rejects(
+      execFileAsync(process.execPath, [fileURLToPath(new URL('./publish-dashboard.mjs', import.meta.url))], {
+        cwd: root, env: { ...process.env, DASHBOARD_STATE_PATH: statePath },
+      })
+    );
+    const state = JSON.parse(await readFile(statePath, 'utf8'));
+    assert.equal(state.status, 'blocked_dirty');
+    assert.equal(state.escalation.target, 'khan');
+    assert.deepEqual(state.escalation.changes, [{ status: ' M', path: 'tracked.md' }]);
+    assert.equal(await readFile(path.join(root, 'tracked.md'), 'utf8'), 'user change\n');
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
 });
