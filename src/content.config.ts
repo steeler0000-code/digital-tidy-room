@@ -48,4 +48,16 @@ const briefings = defineCollection({
     originalChannels: z.array(channelSchema).default([])
   }).superRefine(validateShared)
 });
-export const collections = { guides, briefings };
+const analyses = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/analyses' }),
+  schema: z.object({
+    ...sharedFields,
+    analysisKind: z.enum(['foreign-flow', 'intraday-gainers', 'weekly-research']),
+    analysisDate: z.coerce.date(),
+    asOf: z.string().min(5),
+    selectionCriteria: z.array(z.string()).min(1),
+    calculationMethod: z.array(z.string()).min(1),
+    limitations: z.array(z.string()).min(1)
+  }).superRefine(validateShared)
+});
+export const collections = { guides, briefings, analyses };

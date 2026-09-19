@@ -1,9 +1,14 @@
 ---
 import { siteConfig } from '@/config/site';
+import { getPublishedAnalyses } from '@/lib/content';
 
 const currentPath = Astro.url.pathname;
 const isCurrent = (href: string) =>
   href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+const hasAnalyses=(await getPublishedAnalyses()).length>0;
+const navItems=hasAnalyses
+  ? [...siteConfig.navigation.slice(0,3),{label:'종목 분석',href:'/analyses/'},...siteConfig.navigation.slice(3)]
+  : siteConfig.navigation;
 ---
 
 <header class="site-header">
@@ -15,7 +20,7 @@ const isCurrent = (href: string) =>
 
     <nav class="desktop-nav" aria-label="주요 메뉴">
       {
-        siteConfig.navigation.map((item) => (
+        navItems.map((item) => (
           <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
             {item.label}
           </a>
@@ -26,7 +31,7 @@ const isCurrent = (href: string) =>
     <details class="mobile-nav">
       <summary>메뉴</summary>
       <nav class="mobile-nav__panel" aria-label="모바일 주요 메뉴">
-        {siteConfig.navigation.map((item) => <a href={item.href}>{item.label}</a>)}
+        {navItems.map((item) => <a href={item.href}>{item.label}</a>)}
       </nav>
     </details>
   </div>

@@ -28,8 +28,10 @@ for (const file of htmlFiles) {
 
 const sitemap = await readFile(path.join(dist, 'sitemap.xml'), 'utf8');
 let publicCount = 0;
-for (const collection of ['guides', 'briefings']) {
-  for (const file of (await files(path.join(root, 'src/content', collection))).filter((item) => item.endsWith('.md'))) {
+for (const collection of ['guides', 'briefings', 'analyses']) {
+  const collectionRoot=path.join(root,'src/content',collection);
+  if (!(await exists(collectionRoot))) continue;
+  for (const file of (await files(collectionRoot)).filter((item) => item.endsWith('.md'))) {
     const source = await readFile(file, 'utf8');
     const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---/);
     if (!match) continue;

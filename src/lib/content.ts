@@ -8,4 +8,5 @@ export function contentDate(entry: { data: { publishedAt?: Date; updatedAt?: Dat
 export function sortByRecent<T extends { data: { publishedAt?: Date; updatedAt?: Date } }>(entries: T[]) { return [...entries].sort((a, b) => contentDate(b).getTime() - contentDate(a).getTime()); }
 export async function getPublishedGuides() { return sortByRecent((await getCollection('guides')).filter(isPublished)); }
 export async function getPublishedBriefings() { return sortByRecent((await getCollection('briefings')).filter(isPublished)); }
-export type AnyContentEntry = CollectionEntry<'guides'> | CollectionEntry<'briefings'>;
+export async function getPublishedAnalyses() { return sortByRecent((await getCollection('analyses')).filter(isPublished)); }
+export type AnyContentEntry = CollectionEntry<'guides'> | CollectionEntry<'briefings'> | CollectionEntry<'analyses'>;
