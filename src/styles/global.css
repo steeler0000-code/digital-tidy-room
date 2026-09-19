@@ -610,10 +610,12 @@ blockquote {
 .archive-notice,.disclaimer-box { margin-bottom:28px;padding:22px 24px;border:1px solid #cdd9eb;border-radius:var(--radius-sm);background:#edf3fc; }
 .archive-notice p,.disclaimer-box p { margin:7px 0 0;color:var(--ink-soft); }
 .tool-shell { display:grid;grid-template-columns:minmax(0,760px) 300px;align-items:start;gap:36px; }
+.tool-shell > * { min-width:0; }
+.tool-guide p,.tool-guide li { overflow-wrap:anywhere; }
 .calculator { padding:clamp(22px,4vw,38px);border:1px solid var(--line);border-radius:var(--radius-lg);background:white;box-shadow:var(--shadow); }
 .calculator-form { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px; }
 .calculator-form label { display:grid;gap:7px;color:var(--navy);font-weight:720; }
-.calculator-form input { width:100%;min-height:48px;padding:10px 12px;border:1px solid #bfcbdc;border-radius:10px;background:#fbfdff; }
+.calculator-form input { width:100%;max-width:100%;min-height:48px;padding:10px 12px;border:1px solid #bfcbdc;border-radius:10px;background:#fbfdff; }
 .calculator-result { margin-top:28px;padding:24px;border-radius:14px;background:#edf3fc; }
 .calculator-result h2 { margin-bottom:16px;font-size:1.35rem; }
 .calculator-result dl { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0; }
