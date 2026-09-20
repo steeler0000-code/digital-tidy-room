@@ -32,6 +32,7 @@ class DirtyWorktreeBlockedError extends Error {
 }
 
 async function notify(text) {
+  if (process.env.DASHBOARD_NOTIFY === '0' || process.env.DASHBOARD_NOTIFY === 'false') return;
   const token = process.env.MURDOCH_TELEGRAM_BOT_TOKEN;
   let chatId = process.env.MURDOCH_TELEGRAM_CHAT_ID;
   if (!chatId) {

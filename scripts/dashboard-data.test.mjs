@@ -62,7 +62,7 @@ test('dirty worktree stops dashboard refresh and records a Khan escalation', asy
     await writeFile(path.join(root, 'tracked.md'), 'user change\n');
     await assert.rejects(
       execFileAsync(process.execPath, [fileURLToPath(new URL('./publish-dashboard.mjs', import.meta.url))], {
-        cwd: root, env: { ...process.env, DASHBOARD_STATE_PATH: statePath },
+        cwd: root, env: { ...process.env, DASHBOARD_STATE_PATH: statePath, DASHBOARD_NOTIFY: '0' },
       })
     );
     const state = JSON.parse(await readFile(statePath, 'utf8'));
