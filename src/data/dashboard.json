@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T06:00:02+09:00",
+  "generatedAt": "2026-09-21T06:00:02+09:00",
   "score": -1,
   "status": "mixed",
   "statusLabel": "혼조",
@@ -28,7 +28,7 @@
       "changeLabel": "3개월 전 대비 +0.50%p",
       "direction": "negative",
       "contribution": -1,
-      "asOf": "2026-09-15",
+      "asOf": "2026-09-18",
       "frequency": "일간",
       "description": "기준금리 상승은 조달비용과 평가가치에 부담을 줄 수 있습니다.",
       "history": [
@@ -95,16 +95,15 @@
       "id": "us-10y",
       "region": "US",
       "label": "미국 10년물 금리",
-      "value": 5.01,
-      "displayValue": "5.01%",
-      "changeLabel": "60거래일 전 대비 +0.50%p",
+      "value": 4.94,
+      "displayValue": "4.94%",
+      "changeLabel": "60거래일 전 대비 +0.44%p",
       "direction": "negative",
       "contribution": -1,
-      "asOf": "2026-09-16",
+      "asOf": "2026-09-17",
       "frequency": "일간",
       "description": "성장주 평가가치와 글로벌 자산의 할인율을 나타내는 핵심 금리입니다.",
       "history": [
-        4.79,
         4.77,
         4.78,
         4.8,
@@ -113,7 +112,8 @@
         4.96,
         4.97,
         5,
-        5.01
+        5.01,
+        4.94
       ],
       "source": {
         "name": "FRED",
@@ -127,14 +127,13 @@
       "label": "10년-2년 금리차",
       "value": 0.27,
       "displayValue": "+0.27%p",
-      "changeLabel": "60거래일 전 대비 +0.00%p",
-      "direction": "neutral",
+      "changeLabel": "60거래일 전 대비 -0.07%p",
+      "direction": "negative",
       "contribution": 0,
-      "asOf": "2026-09-16",
+      "asOf": "2026-09-17",
       "frequency": "일간",
       "description": "장·단기 금리차로 경기 기대와 금융 환경을 확인합니다.",
       "history": [
-        0.4,
         0.43,
         0.41,
         0.41,
@@ -143,6 +142,7 @@
         0.33,
         0.32,
         0.33,
+        0.27,
         0.27
       ],
       "source": {
