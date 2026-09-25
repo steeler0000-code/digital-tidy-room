@@ -982,6 +982,11 @@ blockquote {
   color: var(--navy-deep);
 }
 
+.prose .analysis-classification-label {
+  color: #1769aa;
+  font-weight: 800;
+}
+
 .toc {
   position: sticky;
   top: 104px;

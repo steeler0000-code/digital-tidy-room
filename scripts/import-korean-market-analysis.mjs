@@ -14,7 +14,18 @@ function metric(value){
 function kindSlug(kind){return ({foreign_flow:'foreign-flow',intraday_gainers:'intraday-gainers',weekend_research:'weekly-research'})[kind];}
 function kindLabel(kind){return ({foreign_flow:'외국인 수급',intraday_gainers:'장중 급등 종목',weekend_research:'주간 심층 분석'})[kind];}
 function requiredList(article,key,label){const value=article[key];if(!Array.isArray(value)||!value.some(text))throw new Error(`${label}이 없습니다.`);return value.map(text).filter(Boolean);}
-function frontmatterYaml(data){return stringify(data,{lineWidth:0}).trim().replace(/^(slug): ([^\n]+)$/gm,(_,key,value)=>`${key}: ${JSON.stringify(String(value).trim())}`);}
+function frontmatterYaml(data){return stringify(data,{lineWidth:0}).trim().replace(/^(slug|asOf): ([^\n]+)$/gm,(_,key,value)=>`${key}: ${JSON.stringify(String(value).trim())}`);}
+const CLASSIFICATION_LABELS=['기본 시나리오','상방 시나리오','하방 시나리오','추적 지표','종합 해석','기업·산업 배경','가치 판단'];
+const classificationLabelPattern=new RegExp(`\\s*\\[(${CLASSIFICATION_LABELS.join("|")})\\]\\s*`,"g");
+export function formatClassificationLabels(value){
+  return text(value).replace(classificationLabelPattern,(match,label,offset,input)=>`\n\n<strong class="analysis-classification-label">[${label}]<\/strong>${input.slice(offset+match.length).trim()&&!input.slice(offset+match.length).trim().startsWith("[")?" ":""}`).trim();
+}
+function analysisHighlights(stocks,synthesis){
+  const values=stocks.slice(0,5).map(stock=>`${text(stock.name)} — ${metric(stock.primary_metric)}`).filter(text);
+  if(values.length<2&&text(synthesis?.classification)) values.push(`분석 분류 — ${text(synthesis.classification)}`);
+  if(values.length<2&&text(synthesis?.analysis)) values.push(`종합 해석 — ${text(synthesis.analysis)}`);
+  return values;
+}
 
 export async function buildAnalysisPackage(packageDir,{publish=false}={}){
   const article=await json(path.join(packageDir,'article.json'));
@@ -30,13 +41,13 @@ export async function buildAnalysisPackage(packageDir,{publish=false}={}){
   if(!sources.length) throw new Error('공개 가능한 원자료가 없습니다.');
   const slug=`${article.publication_date}-${kind}`;
   const rows=stocks.map(stock=>`| ${stock.rank} | ${md(stock.name)} (${md(stock.ticker)}) | ${md(metric(stock.primary_metric))} | ${md(stock.reason)} |`).join('\n');
-  const sections=stocks.map(stock=>`## ${md(stock.name)} (${md(stock.ticker)})\n\n**핵심 수치:** ${md(metric(stock.primary_metric))}\n\n### 확인된 근거\n\n${text(stock.evidence)}\n\n### 가치 판단에 연결할 점\n\n${text(stock.value_view)}\n\n### 후속 확인 항목\n\n${text(stock.outlook)}\n\n### 반대 시나리오와 위험\n\n${(stock.risks||[]).map(value=>`- ${text(value)}`).join('\n')}`).join('\n\n');
+  const sections=stocks.map(stock=>`## ${md(stock.name)} (${md(stock.ticker)})\n\n**핵심 수치:** ${md(metric(stock.primary_metric))}\n\n### 확인된 근거\n\n${formatClassificationLabels(stock.evidence)}\n\n### 가치 판단에 연결할 점\n\n${formatClassificationLabels(stock.value_view)}\n\n### 후속 확인 항목\n\n${formatClassificationLabels(stock.outlook)}\n\n### 반대 시나리오와 위험\n\n${(stock.risks||[]).map(value=>`- ${formatClassificationLabels(value)}`).join('\n')}`).join('\n\n');
   const synthesis=article.synthesis||{};
-  const body=`## 분석 대상 비교\n\n| 순위 | 종목 | 핵심 수치 | 선정 이유 |\n|---:|---|---|---|\n${rows}\n\n${sections}\n\n## 종합 해석\n\n**분류:** ${text(synthesis.classification)}\n\n${text(synthesis.analysis)}\n\n### 이후 확인할 지표\n\n${(synthesis.watch_items||[]).map(value=>`- ${text(value)}`).join('\n')}\n`;
+  const body=`## 분석 대상 비교\n\n| 순위 | 종목 | 핵심 수치 | 선정 이유 |\n|---:|---|---|---|\n${rows}\n\n${sections}\n\n## 종합 해석\n\n**분류:** ${text(synthesis.classification)}\n\n${formatClassificationLabels(synthesis.analysis)}\n\n### 이후 확인할 지표\n\n${(synthesis.watch_items||[]).map(value=>`- ${formatClassificationLabels(value)}`).join('\n')}\n`;
   const frontmatter={
     title:text(article.title),description:text(article.subtitle),subtitle:text(article.executive_summary),slug,author:'카일루스',
     ...(publish?{publishedAt:article.publication_date}:{}),editorialApproved:publish,draft:!publish,featured:false,contentTier:'standard',
-    summary:text(article.executive_summary),highlights:stocks.slice(0,5).map(stock=>`${text(stock.name)} — ${metric(stock.primary_metric)}`),related:[],
+    summary:text(article.executive_summary),highlights:analysisHighlights(stocks,synthesis),related:[],
     sources:sources.map(source=>({title:text(source.title),url:source.url,publisher:host(source.url)})),cards:[],externalChannels:[],
     analysisKind:kind,analysisDate:article.publication_date,asOf:text(article.as_of),selectionCriteria,calculationMethod,limitations
   };
