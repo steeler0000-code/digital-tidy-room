@@ -14,12 +14,14 @@ test('Caelus 패키지를 사이트 우선 브리핑 계약으로 변환한다',
   await writeFile(path.join(root, 'article.json'), JSON.stringify({ title: '[8/31 이슈] 첫 번째 & 두 번째 & 세 번째', usedClaimIds: ['CL-01'], imageAlt: Object.fromEntries(slides.map((_, index) => [`slide-${String(index + 1).padStart(2, '0')}`, `시장 이슈 ${index + 1}의 영향과 확인 지표를 설명하는 카드뉴스 이미지`])) }));
   await writeFile(path.join(root, 'brief.json'), JSON.stringify({ coverage_start: '2026-08-28T06:30:00+09:00', coverage_end: '2026-08-31T06:30:00+09:00', selected: { issues: ['C-01'] }, candidates: [{ id: 'C-01', market: '미국' }] }));
   await writeFile(path.join(root, 'claims.json'), JSON.stringify({ claims: [{ id: 'CL-01', status: 'verified', sources: ['https://example.com/source'] }] }));
-  await writeFile(path.join(root, 'channels/instagram/manifest.json'), JSON.stringify({ slides, used_claim_ids: ['CL-01'], summary_rows: [{ issue: '첫 번째', impact: '영향', watch: '지표' }, { issue: '두 번째', impact: '영향', watch: '지표' }, { issue: '세 번째', impact: '영향', watch: '지표' }] }));
+  await writeFile(path.join(root, 'channels/instagram/manifest.json'), JSON.stringify({ slides, used_claim_ids: ['CL-01'], summary_rows: [{ issue: '첫 번째', impact: '영향 [CL-01]', watch: '지표 [CL-01]' }, { issue: '두 번째', impact: '영향', watch: '지표' }, { issue: '세 번째', impact: '영향', watch: '지표' }] }));
   await writeFile(path.join(root, 'master.md'), `[8/31 이슈] 제목\n\n발행 시각: 2026.08.31 08 KST\n\n도입 문장입니다. (CL-01)\n\n[IMAGE:slide-01]\n\n이슈 1: 첫 번째\n\n영향과 전망\n\n${'시장 전달 경로를 구체적으로 설명하는 문장입니다. '.repeat(55)}\n\n※ 투자 판단과 책임은 투자자 본인에게 있습니다.\n`);
   const result = await buildBriefingPackage(root, { publish: true });
   assert.equal(result.slug, '2026-08-31');
   assert.equal(result.frontmatter.title, "['26년 8월 31일 카일루스 마켓브리핑]");
   assert.equal(result.frontmatter.cards.length, 8);
+  assert.doesNotMatch(result.frontmatter.summary, /CL-01/);
+  assert.doesNotMatch(result.frontmatter.highlights[0], /CL-01/);
   assert.equal(result.frontmatter.sources[0].url, 'https://example.com/source');
   assert.equal(result.frontmatter.draft, false);
   assert.match(result.body, /^도입 문장입니다\./);

@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { stringify } from 'yaml';
 
-const CLAIM_MARKER = /\s*\((?:CL|L)-?\d+(?:\s*,\s*(?:CL|L)-?\d+)*\)/gi;
+const CLAIM_MARKER = /\s*(?:\((?:CL|L)-?\d+(?:\s*,\s*(?:CL|L)-?\d+)*\)|\[(?:CL|L)-?\d+(?:\s*,\s*(?:CL|L)-?\d+)*\])/gi;
 
 async function json(file) {
   return JSON.parse(await readFile(file, 'utf8'));
@@ -104,8 +104,8 @@ export async function buildBriefingPackage(packageDir, { publish = false } = {})
     draft: !publish,
     featured: false,
     contentTier: cardsEnabled ? 'flagship' : 'standard',
-    summary: rows.map((row) => `${row.issue}: ${row.impact}`).join(' '),
-    highlights: rows.map((row) => `${row.issue} — ${row.watch}`),
+    summary: rows.map((row) => `${row.issue}: ${row.impact.replace(CLAIM_MARKER, '').trim()}`).join(' '),
+    highlights: rows.map((row) => `${row.issue} — ${row.watch.replace(CLAIM_MARKER, '').trim()}`),
     related: [],
     sources: sourceUrls.map((url) => ({ title: host(url), url, publisher: host(url) })),
     cards,
