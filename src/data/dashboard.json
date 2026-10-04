@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-02T06:00:04+09:00",
+  "generatedAt": "2026-10-05T06:00:04+09:00",
   "score": -2,
   "status": "mixed",
   "statusLabel": "혼조",
@@ -28,7 +28,7 @@
       "changeLabel": "3개월 전 대비 +0.50%p",
       "direction": "negative",
       "contribution": -1,
-      "asOf": "2026-10-01",
+      "asOf": "2026-10-02",
       "frequency": "일간",
       "description": "기준금리 상승은 조달비용과 평가가치에 부담을 줄 수 있습니다.",
       "history": [
@@ -47,12 +47,12 @@
       "id": "kr-cpi",
       "region": "KR",
       "label": "한국 소비자물가",
-      "value": 3.09,
-      "displayValue": "3.1%",
+      "value": 2.88,
+      "displayValue": "2.9%",
       "changeLabel": "전년 동월 대비",
       "direction": "positive",
       "contribution": 0,
-      "asOf": "2026-08-01",
+      "asOf": "2026-09-01",
       "frequency": "월간",
       "description": "금리 경로를 판단하기 위해 전년 동월 대비 총지수 변화를 봅니다.",
       "history": [
@@ -95,16 +95,15 @@
       "id": "us-10y",
       "region": "US",
       "label": "미국 10년물 금리",
-      "value": 5.29,
-      "displayValue": "5.29%",
-      "changeLabel": "60거래일 전 대비 +0.74%p",
+      "value": 5.24,
+      "displayValue": "5.24%",
+      "changeLabel": "60거래일 전 대비 +0.68%p",
       "direction": "negative",
       "contribution": -1,
-      "asOf": "2026-09-30",
+      "asOf": "2026-10-01",
       "frequency": "일간",
       "description": "성장주 평가가치와 글로벌 자산의 할인율을 나타내는 핵심 금리입니다.",
       "history": [
-        4.94,
         5.01,
         4.96,
         4.96,
@@ -113,7 +112,8 @@
         5.17,
         5.24,
         5.26,
-        5.29
+        5.29,
+        5.24
       ],
       "source": {
         "name": "FRED",
@@ -125,16 +125,15 @@
       "id": "us-yield-spread",
       "region": "US",
       "label": "10년-2년 금리차",
-      "value": 0.41,
-      "displayValue": "+0.41%p",
-      "changeLabel": "60거래일 전 대비 +0.05%p",
+      "value": 0.46,
+      "displayValue": "+0.46%p",
+      "changeLabel": "60거래일 전 대비 +0.11%p",
       "direction": "positive",
       "contribution": 0,
-      "asOf": "2026-09-30",
+      "asOf": "2026-10-01",
       "frequency": "일간",
       "description": "장·단기 금리차로 경기 기대와 금융 환경을 확인합니다.",
       "history": [
-        0.27,
         0.25,
         0.2,
         0.25,
@@ -143,7 +142,8 @@
         0.36,
         0.32,
         0.37,
-        0.41
+        0.41,
+        0.46
       ],
       "source": {
         "name": "FRED",
