@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-11-04T06:00:04+09:00",
-  "score": -2,
+  "generatedAt": "2026-11-05T06:00:04+09:00",
+  "score": -1,
   "status": "mixed",
   "statusLabel": "혼조",
   "summary": "금리·물가·유동성 지표가 한 방향을 가리키지 않습니다. 단일 지표를 매매 신호로 삼기보다 다음 공표에서 방향이 확인되는지 점검할 구간입니다.",
   "contributions": [
     {
       "label": "금리",
-      "score": -2
+      "score": -1
     },
     {
       "label": "물가",
@@ -28,7 +28,7 @@
       "changeLabel": "3개월 전 대비 +0.25%p",
       "direction": "negative",
       "contribution": -1,
-      "asOf": "2026-11-01",
+      "asOf": "2026-11-02",
       "frequency": "일간",
       "description": "기준금리 상승은 조달비용과 평가가치에 부담을 줄 수 있습니다.",
       "history": [
@@ -47,12 +47,12 @@
       "id": "kr-cpi",
       "region": "KR",
       "label": "한국 소비자물가",
-      "value": 2.88,
-      "displayValue": "2.9%",
+      "value": 2.82,
+      "displayValue": "2.8%",
       "changeLabel": "전년 동월 대비",
-      "direction": "positive",
+      "direction": "negative",
       "contribution": 0,
-      "asOf": "2026-09-01",
+      "asOf": "2026-10-01",
       "frequency": "월간",
       "description": "금리 경로를 판단하기 위해 전년 동월 대비 총지수 변화를 봅니다.",
       "history": [
@@ -95,16 +95,15 @@
       "id": "us-10y",
       "region": "US",
       "label": "미국 10년물 금리",
-      "value": 4.94,
-      "displayValue": "4.94%",
-      "changeLabel": "60거래일 전 대비 +0.31%p",
+      "value": 4.91,
+      "displayValue": "4.91%",
+      "changeLabel": "60거래일 전 대비 +0.22%p",
       "direction": "negative",
-      "contribution": -1,
-      "asOf": "2026-10-30",
+      "contribution": 0,
+      "asOf": "2026-11-02",
       "frequency": "일간",
       "description": "성장주 평가가치와 글로벌 자산의 할인율을 나타내는 핵심 금리입니다.",
       "history": [
-        5.15,
         5.12,
         5.13,
         4.96,
@@ -113,7 +112,8 @@
         4.99,
         5.05,
         4.98,
-        4.94
+        4.94,
+        4.91
       ],
       "source": {
         "name": "FRED",
@@ -125,16 +125,15 @@
       "id": "us-yield-spread",
       "region": "US",
       "label": "10년-2년 금리차",
-      "value": 0.38,
-      "displayValue": "+0.38%p",
-      "changeLabel": "60거래일 전 대비 -0.07%p",
+      "value": 0.32,
+      "displayValue": "+0.32%p",
+      "changeLabel": "60거래일 전 대비 -0.12%p",
       "direction": "negative",
       "contribution": 0,
-      "asOf": "2026-10-30",
+      "asOf": "2026-11-02",
       "frequency": "일간",
       "description": "장·단기 금리차로 경기 기대와 금융 환경을 확인합니다.",
       "history": [
-        0.38,
         0.33,
         0.32,
         0.31,
@@ -143,7 +142,8 @@
         0.29,
         0.38,
         0.37,
-        0.38
+        0.38,
+        0.32
       ],
       "source": {
         "name": "FRED",
